@@ -53,4 +53,4 @@ ClientSocket.setup();
 PrompterSocket.setup();
 RejiSocket.setup();
 
-server.listen(process.env.PORT || 9006);
+server.listen(process.env.PORT || 9003);
