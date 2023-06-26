@@ -1,5 +1,5 @@
 import { Schema, Types, model } from "mongoose";
-import { EventOrder, Ingredient } from "karikarihelper";
+import { Ingredient } from "karikarihelper";
 
 // Types
 import { InHouseError, Statics } from "@types";

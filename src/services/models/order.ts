@@ -118,20 +118,19 @@ export class OrderService {
         newEntry.event = StringService.toObjectId(values.eventId);
         newEntry.status = newEntry.status;
 
-        const foundOperator = await OperatorService.queryById(operator._id);
+        const foundOperator =
+            operator.role === OperatorRole.ADMIN && values.operatorId
+                ? (
+                      await OperatorService.queryById(values.operatorId)
+                  ).toObject<Operator>()
+                : operator;
 
         if (!foundOperator) {
             throw new InHouseError(OperatorErrors.NOT_FOUND, 404);
         }
 
-        if (operator.role === OperatorRole.ADMIN && values.operatorId) {
-            newEntry.operator = foundOperator._id;
-            newEntry.realm = foundOperator.realm._id;
-        } else {
-            newEntry.operator = StringService.toObjectId(operator._id);
-            newEntry.realm = StringService.toObjectId(operator.realm._id);
-        }
-
+        newEntry.operator = StringService.toObjectId(foundOperator._id);
+        newEntry.realm = StringService.toObjectId(foundOperator.realm._id);
         newEntry.client = values.clientName?.trim();
 
         for (const item of values.items) {

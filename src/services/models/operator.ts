@@ -12,7 +12,7 @@ import { OperatorErrors, OperatorModel } from "@models";
 import { InHouseError } from "@types";
 
 // Services
-import { DatabaseService, StringService } from "@services";
+import { DatabaseService, RealmService, StringService } from "@services";
 
 export class OperatorService {
     public static visibleParameters = ["displayName", "role", "realm", "photo"];
@@ -121,12 +121,22 @@ export class OperatorService {
         newEntry.userName = values.userName;
         newEntry.displayName = values.displayName;
         newEntry.realm = StringService.toObjectId(
-            operator.role === OperatorRole.ADMIN
+            operator.role === OperatorRole.ADMIN && values.realmId
                 ? values.realmId
                 : operator.realm._id
         );
         newEntry.role = values.role.trim();
         newEntry.photo = values.photo;
+
+        const adminRealm = await RealmService.getAdminRealm();
+
+        const isAdminRealm =
+            values.realmId && values.realmId === adminRealm._id.toString();
+        const isAdminRole = values.role && values.role === OperatorRole.ADMIN;
+
+        if (isAdminRealm || isAdminRole) {
+            newEntry.realm = StringService.toObjectId(adminRealm._id);
+        }
 
         await newEntry.save();
 

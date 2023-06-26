@@ -1,5 +1,9 @@
 import { Router } from "express";
 
+// Types
+import { OperatorErrors } from "@models";
+import { InHouseError } from "@types";
+
 // Services
 import {
     ResponseService,
@@ -7,10 +11,6 @@ import {
     RequestService,
     OperatorService,
 } from "@services";
-
-// Types
-import { OperatorErrors } from "@models";
-import { InHouseError } from "@types";
 
 const router = Router();
 

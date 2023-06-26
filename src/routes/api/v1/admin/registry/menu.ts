@@ -51,7 +51,7 @@ router.get("/self", async (req, res) => {
     }
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const title = RequestService.queryParamToString(req.body.title);
         const icon = RequestService.queryParamToString(req.body.icon);
@@ -62,12 +62,15 @@ router.post("/", (req, res) => {
             throw new InHouseError(MenuErrors.INVALID, 400);
         }
 
-        const response = MenuService.save(res.locals.operator as Operator, {
-            title: title,
-            icon: icon,
-            route: route,
-            parentId: parentId,
-        });
+        const response = await MenuService.save(
+            res.locals.operator as Operator,
+            {
+                title: title,
+                icon: icon,
+                route: route,
+                parentId: parentId,
+            }
+        );
 
         res.status(200).json(
             ResponseService.generateSucessfulResponse(response)

@@ -2,15 +2,15 @@ import { Router } from "express";
 import QRCode from "qrcode";
 import { Operator, OrderItemParam, QrCodeRseponse } from "karikarihelper";
 
-// Services
-import { OrderService, RequestService, ResponseService } from "@services";
-
 // Types
 import { OrderErrors } from "@models";
 import { InHouseError } from "@types";
 
 // Enums
 import { OrderStatus } from "@enums";
+
+// Services
+import { OrderService, RequestService, ResponseService } from "@services";
 
 const router = Router();
 

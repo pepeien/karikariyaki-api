@@ -49,4 +49,18 @@ const RealmSchema = new Schema({
 
 const RealmModel = model(Statics.REALM_COLLECTION_NAME, RealmSchema);
 
+RealmModel.findOne({
+    name: Statics.REALM_ADMIN_NAME,
+}).then((foundRealm) => {
+    if (foundRealm) {
+        return;
+    }
+
+    const adminRealm = new RealmModel();
+
+    adminRealm.name = Statics.REALM_ADMIN_NAME;
+
+    adminRealm.save();
+});
+
 export default RealmModel;
