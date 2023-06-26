@@ -13,6 +13,7 @@ export class Statics {
 
     public static REALM_CLIENT_NAME_MIN_LENGTH = 1;
     public static REALM_CLIENT_NAME_MAX_LENGTH = 25;
+    public static REALM_ADMIN_NAME = "Admin";
 
     public static EVENT_COLLECTION_NAME = "events";
     public static MENU_COLLECTION_NAME = "menus";

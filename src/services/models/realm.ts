@@ -1,17 +1,20 @@
 import {
     Operator,
     OperatorRole,
+    Realm,
     RealmCreatableParams,
     RealmEditableParams,
     RealmQueryableParams,
 } from "karikarihelper";
 
 // Types
-import { InHouseError } from "@types";
+import { InHouseError, Statics } from "@types";
 import { OperatorErrors, RealmModel } from "@models";
 
 // Services
 import { DatabaseService, StringService } from "@services";
+
+let adminRealm: Realm | null = null;
 
 export class RealmService {
     public static visibleParameters = ["name"];
@@ -46,9 +49,23 @@ export class RealmService {
     }
 
     public static async queryId(id: string) {
+        await DatabaseService.getConnection();
+
         return RealmModel.findById(StringService.toObjectId(id)).select(
             RealmService.visibleParameters
         );
+    }
+
+    public static async getAdminRealm() {
+        if (!adminRealm) {
+            const foundRealm = await RealmModel.findOne({
+                name: Statics.REALM_ADMIN_NAME,
+            });
+
+            adminRealm = foundRealm.toObject<Realm>();
+        }
+
+        return adminRealm;
     }
 
     public static async save(operator: Operator, values: RealmCreatableParams) {

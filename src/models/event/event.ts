@@ -29,7 +29,7 @@ const validateEventOrders = async (orderIds: Types.ObjectId[]) => {
             throw new InHouseError(EventErrors.ORDER_INVALID);
         }
 
-        if (orderIds.filter((_) => _ !== orderId).length >= 1) {
+        if (orderIds.filter((_) => _ === orderId).length > 1) {
             throw new InHouseError(EventErrors.ORDER_DUPLICATED);
         }
     }
@@ -40,6 +40,7 @@ const EventSchema = new Schema({
         type: String,
         required: [true, EventErrors.NAME_REQUIRED],
     },
+    //TODO: Convert to Epoch
     date: {
         type: Date,
         required: [true, EventErrors.DATE_REQUIRED],

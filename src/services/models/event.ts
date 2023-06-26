@@ -39,6 +39,8 @@ export class EventService {
     public static async query(values: EventQueryableParams, populate = true) {
         await DatabaseService.getConnection();
 
+        await EventService._fixEventsStatus();
+
         const query = [];
 
         if (values.id) {
@@ -84,6 +86,7 @@ export class EventService {
             .populate(EventService._populateOptions);
     }
 
+    //TODO: Convert to Epoch
     public static async save(operator: Operator, values: EventCreatableParams) {
         if (EventService._canPerformModifications(operator)) {
             throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
@@ -153,5 +156,22 @@ export class EventService {
 
     private static _canPerformModifications(operator: Operator) {
         return operator.role !== OperatorRole.ADMIN;
+    }
+
+    //TODO: Convert to Epoch
+    private static async _fixEventsStatus() {
+        const foundEvents = await EventModel.find().select(
+            EventService.visibleParameters
+        );
+
+        for (const foundEvent of foundEvents) {
+            if (foundEvent.isOpen === DateService.isToday(foundEvent.date)) {
+                continue;
+            }
+
+            await EventModel.findByIdAndUpdate(foundEvent._id, {
+                isOpen: !foundEvent.isOpen,
+            });
+        }
     }
 }

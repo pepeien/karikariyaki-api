@@ -1,12 +1,12 @@
 import { Router } from "express";
+import { Operator } from "karikarihelper";
+
+// Types
+import { RealmErrors } from "@models";
+import { InHouseError } from "@types";
 
 // Services
 import { RequestService, ResponseService, RealmService } from "@services";
-
-// Models
-import { RealmErrors } from "@models";
-import { Operator } from "karikarihelper";
-import { InHouseError } from "@types";
 
 const router = Router();
 

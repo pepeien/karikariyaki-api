@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 
+//TODO: Convert to Epoch
 export class DateService {
     public static standarizeCurrentDate(targetDate = new Date()): Date {
         const standarizedDate = new Date(targetDate.getTime());
