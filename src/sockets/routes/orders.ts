@@ -94,8 +94,6 @@ const deleteOrder = (socket: Socket) =>
                 foundOrder.event._id.toString(),
                 operator
             );
-
-            await SocketService.refreshOrder(id);
         } catch (error) {
             socket.emit(
                 "order:error",
