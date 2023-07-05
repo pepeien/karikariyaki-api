@@ -2,7 +2,6 @@ import { Socket } from "socket.io";
 import {
     EventOrderCreatableParams,
     EventOrderEditableParams,
-    EventOrderQueryableParams,
     Operator,
 } from "karikarihelper";
 
@@ -94,8 +93,6 @@ const deleteOrder = (socket: Socket) =>
                 foundOrder.event._id.toString(),
                 operator
             );
-
-            await SocketService.refreshOrder(id);
         } catch (error) {
             socket.emit(
                 "order:error",
@@ -166,7 +163,11 @@ const joinOrder = (socket: Socket) => {
             SocketService.leaveRooms(socket, "event");
 
             socket.join(
-                `event/${foundOrder.event._id.toString()}/${foundOrder.realm._id.toString()}/${foundOrder._id.toString()}`
+                SocketService.generateEventOrderRoom(
+                    foundOrder.event._id.toString(),
+                    foundOrder.realm._id.toString(),
+                    foundOrder._id.toString()
+                )
             );
 
             socket.emit(
