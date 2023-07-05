@@ -1,4 +1,5 @@
 import { Socket } from "socket.io";
+import { Operator } from "karikarihelper";
 
 // Types
 import { InHouseError } from "@types";
@@ -10,7 +11,6 @@ import { RejiSocket, PrompterSocket, ClientSocket } from "@sockets";
 // Services
 import { OrderService } from "./models/order";
 import { ResponseService } from "./response";
-import { Operator } from "karikarihelper";
 
 export class SocketService {
     public static leaveRooms(socket: Socket, roomPrefix: string) {
@@ -27,14 +27,19 @@ export class SocketService {
             realmId: operator.realm._id,
         });
 
+        const roomAddress = SocketService.generateEventRoom(
+            eventId,
+            operator.realm._id
+        );
+
         RejiSocket.namespace
-            .to(`event/${eventId}/${operator.realm._id}`)
+            .to(roomAddress)
             .emit(
                 "orders:refresh",
                 ResponseService.generateSucessfulResponse(eventOrders)
             );
         PrompterSocket.namespace
-            .to(`event/${eventId}/${operator.realm._id}`)
+            .to(roomAddress)
             .emit(
                 "orders:refresh",
                 ResponseService.generateSucessfulResponse(eventOrders)
@@ -50,11 +55,27 @@ export class SocketService {
 
         ClientSocket.namespace
             .to(
-                `event/${foundOrder.event._id.toString()}/${foundOrder.realm._id.toString()}/${foundOrder._id.toString()}`
+                SocketService.generateEventOrderRoom(
+                    foundOrder.event._id.toString(),
+                    foundOrder.realm._id.toString(),
+                    foundOrder._id.toString()
+                )
             )
             .emit(
                 "order:refresh",
                 ResponseService.generateSucessfulResponse(foundOrder)
             );
+    }
+
+    public static generateEventRoom(eventId: string, realmId: string) {
+        return `event/${eventId}/${realmId}`;
+    }
+
+    public static generateEventOrderRoom(
+        eventId: string,
+        realmId: string,
+        orderId: string
+    ) {
+        return `event/${eventId}/${realmId}/${orderId}`;
     }
 }

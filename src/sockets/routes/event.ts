@@ -30,18 +30,14 @@ const createEvent = (socket: Socket) =>
 
             const updatedEvents = await EventService.query({}, false);
 
-            RejiSocket.namespace
-                .to("events")
-                .emit(
-                    "events:refresh",
-                    ResponseService.generateSucessfulResponse(updatedEvents)
-                );
-            PrompterSocket.namespace
-                .to("events")
-                .emit(
-                    "events:refresh",
-                    ResponseService.generateSucessfulResponse(updatedEvents)
-                );
+            RejiSocket.namespace.emit(
+                "events:refresh",
+                ResponseService.generateSucessfulResponse(updatedEvents)
+            );
+            PrompterSocket.namespace.emit(
+                "events:refresh",
+                ResponseService.generateSucessfulResponse(updatedEvents)
+            );
         } catch (error) {
             socket.emit(
                 "event:error",
@@ -75,7 +71,9 @@ const joinEvent = (socket: Socket) =>
 
             SocketService.leaveRooms(socket, "event");
 
-            socket.join(`event/${eventId}/${operator.realm._id}`);
+            socket.join(
+                SocketService.generateEventRoom(eventId, operator.realm._id)
+            );
 
             socket.emit(
                 "event:refresh",
