@@ -268,13 +268,14 @@ export class JWTService {
     }
 
     public static handleShowcasing(req: Request) {
-        const requestHost = req.get("host");
+        const requestOriginURL = new URL(
+            req.get("origin") ?? req.get("referer")
+        );
+        const requestHost = requestOriginURL.host;
         const requestDomain = requestHost.split(":")[0];
         const showcaseDomain = process.env["ORIGIN_SHOWCASE_DOMAIN"];
 
-        const isShowcase = requestDomain.trim() === showcaseDomain.trim();
-
-        console.log(requestHost, requestDomain, showcaseDomain, isShowcase);
+        const isShowcase = requestDomain === showcaseDomain.trim();
 
         if (isShowcase === false) {
             return;
@@ -286,9 +287,9 @@ export class JWTService {
             throw new InHouseError(OperatorErrors.INVALID, 400);
         }
 
-        const adminUserName = process.env.ADMIN_USER_NAME;
+        const adminUserName = process.env.ADMIN_USER_NAME?.trim();
 
-        if (!adminUserName || adminUserName.trim().length === 0) {
+        if (!adminUserName || adminUserName.length === 0) {
             throw new InHouseError(OperatorErrors.INVALID, 400);
         }
 
