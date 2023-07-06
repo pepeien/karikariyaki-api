@@ -1,15 +1,14 @@
 import { Router } from "express";
-import { Operator, OperatorRole } from "karikarihelper";
+import { Operator } from "karikarihelper";
 
 // Types
-import { OperatorErrors, OperatorModel } from "@models";
+import { OperatorErrors } from "@models";
 import { InHouseError } from "@types";
 
 // Services
 import {
     JWTService,
     OperatorService,
-    RealmService,
     RequestService,
     ResponseService,
 } from "@services";
@@ -32,29 +31,6 @@ router.get("/", async (req, res) => {
         if (!foundOperators) {
             throw new InHouseError(OperatorErrors.NOT_FOUND, 404);
         }
-
-        // TODO: Delete after deployment
-        // Tool for conversion of existing data
-        const adminRealm = await RealmService.getAdminRealm();
-        const foundAdmins = await OperatorModel.find({
-            $and: [
-                {
-                    role: OperatorRole.ADMIN,
-                },
-                {
-                    realm: {
-                        $ne: adminRealm._id,
-                    },
-                },
-            ],
-        });
-
-        for (const admin of foundAdmins) {
-            await OperatorModel.findByIdAndUpdate(admin._id, {
-                realm: adminRealm._id,
-            });
-        }
-        //Tool for conversion of existing data
 
         res.status(200).json(
             ResponseService.generateSucessfulResponse(foundOperators)
