@@ -117,10 +117,8 @@ export class JWTService {
         next: NextFunction
     ) {
         try {
-            JWTService.handleShowcasing(req, res);
+            JWTService.handleShowcasing(req);
         } catch (error) {
-            JWTService.clearCookies(req, res);
-
             res.status(error.code ?? 500).json(
                 ResponseService.generateFailedResponse(error.message)
             );
@@ -269,15 +267,20 @@ export class JWTService {
         };
     }
 
-    public static handleShowcasing(req: Request, res: Response) {
+    public static handleShowcasing(req: Request) {
         const requestHost = req.get("host");
         const requestDomain = requestHost.split(":")[0];
         const showcaseDomain = process.env["ORIGIN_SHOWCASE_DOMAIN"];
 
-        const isGetMethod = req.method === "GET";
         const isShowcase = requestDomain.trim() === showcaseDomain.trim();
 
-        if (isGetMethod === false || isShowcase === false) {
+        if (isShowcase === false) {
+            return;
+        }
+
+        const isGetMethod = req.method === "GET";
+
+        if (isGetMethod === false) {
             throw new InHouseError(OperatorErrors.INVALID, 400);
         }
 
