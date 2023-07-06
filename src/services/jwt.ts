@@ -116,6 +116,18 @@ export class JWTService {
         res: Response,
         next: NextFunction
     ) {
+        try {
+            JWTService.handleShowcasing(req, res);
+        } catch (error) {
+            JWTService.clearCookies(req, res);
+
+            res.status(error.code ?? 500).json(
+                ResponseService.generateFailedResponse(error.message)
+            );
+
+            return;
+        }
+
         const accessToken = req.cookies[process.env.COOKIE_NAME];
 
         let userName = "";
@@ -255,5 +267,29 @@ export class JWTService {
                 process.env.IS_PRODUCTION
             ),
         };
+    }
+
+    public static handleShowcasing(req: Request, res: Response) {
+        const requestHost = req.get("host");
+        const requestDomain = requestHost.split(":")[0];
+        const showcaseDomain = process.env["ORIGIN_SHOWCASE_DOMAIN"];
+
+        const isGetMethod = req.method === "GET";
+        const isShowcase = requestDomain.trim() === showcaseDomain.trim();
+
+        if (isGetMethod === false || isShowcase === false) {
+            throw new InHouseError(OperatorErrors.INVALID, 400);
+        }
+
+        const adminUserName = process.env.ADMIN_USER_NAME;
+
+        if (!adminUserName || adminUserName.trim().length === 0) {
+            throw new InHouseError(OperatorErrors.INVALID, 400);
+        }
+
+        req.cookies[process.env.COOKIE_NAME] =
+            JWTService.encodeAccessToken(adminUserName);
+        req.cookies[process.env.COOKIE_REFRESH_NAME] =
+            JWTService.encodeRefreshToken(adminUserName);
     }
 }

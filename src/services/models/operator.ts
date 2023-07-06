@@ -14,6 +14,8 @@ import { InHouseError } from "@types";
 // Services
 import { DatabaseService, RealmService, StringService } from "@services";
 
+let adminOperator: Operator | null = null;
+
 export class OperatorService {
     public static visibleParameters = ["displayName", "role", "realm", "photo"];
 
@@ -92,6 +94,20 @@ export class OperatorService {
         return OperatorModel.findById(id)
             .select(OperatorService.visibleParameters)
             .populate(OperatorService._populateOptions);
+    }
+
+    public static async getAdminOperator() {
+        if (!adminOperator) {
+            const foundOperator = await OperatorModel.findOne({
+                userName: process.env.ADMIN_USER_NAME,
+            })
+                .select(OperatorService.visibleParameters)
+                .populate(OperatorService._populateOptions);
+
+            adminOperator = foundOperator.toObject<Operator>();
+        }
+
+        return adminOperator;
     }
 
     public static async queryByUserName(userName: string) {

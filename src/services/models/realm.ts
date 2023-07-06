@@ -60,7 +60,7 @@ export class RealmService {
         if (!adminRealm) {
             const foundRealm = await RealmModel.findOne({
                 name: Statics.REALM_ADMIN_NAME,
-            });
+            }).select(RealmService.visibleParameters);
 
             adminRealm = foundRealm.toObject<Realm>();
         }

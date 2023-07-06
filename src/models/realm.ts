@@ -1,10 +1,12 @@
 import { Schema, model } from "mongoose";
+import { OperatorRole } from "karikarihelper";
 
 // Types
 import { InHouseError, Statics } from "@types";
+import { OperatorModel } from "@models";
 
 // Services
-import { DatabaseService, StringService } from "@services";
+import { DatabaseService, OperatorService, StringService } from "@services";
 
 export enum RealmErrors {
     INVALID = "ERROR_REALM_INVALID",
@@ -51,16 +53,41 @@ const RealmModel = model(Statics.REALM_COLLECTION_NAME, RealmSchema);
 
 RealmModel.findOne({
     name: Statics.REALM_ADMIN_NAME,
-}).then((foundRealm) => {
-    if (foundRealm) {
-        return;
-    }
+})
+    .then(async (foundRealm) => {
+        if (foundRealm) {
+            return;
+        }
 
-    const adminRealm = new RealmModel();
+        const adminRealm = new RealmModel();
 
-    adminRealm.name = Statics.REALM_ADMIN_NAME;
+        adminRealm.name = Statics.REALM_ADMIN_NAME;
 
-    adminRealm.save();
-});
+        await adminRealm.save();
+
+        const adminUserName = process.env.ADMIN_USER_NAME;
+
+        const foundOperator = await OperatorService.getAdminOperator();
+
+        if (foundOperator) {
+            await OperatorModel.findByIdAndUpdate(foundOperator._id, {
+                realm: adminRealm._id,
+            });
+
+            return;
+        }
+
+        const adminOperator = new OperatorModel();
+
+        adminOperator.userName = adminUserName;
+        adminOperator.displayName = Statics.OPERATOR_ADMIN_DISPLAY_NAME;
+        adminOperator.realm = adminRealm._id;
+        adminOperator.role = OperatorRole.ADMIN;
+
+        await adminOperator.save();
+    })
+    .catch((error) => {
+        console.log(error);
+    });
 
 export default RealmModel;
