@@ -274,6 +274,8 @@ export class JWTService {
 
         const isShowcase = requestDomain.trim() === showcaseDomain.trim();
 
+        console.log(requestHost, requestDomain, showcaseDomain, isShowcase);
+
         if (isShowcase === false) {
             return;
         }
