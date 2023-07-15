@@ -2,11 +2,16 @@ import { Schema, model } from "mongoose";
 import { OperatorRole } from "karikarihelper";
 
 // Types
-import { InHouseError, Statics } from "@types";
+import { Statics } from "@types";
+
+// Models
 import { OperatorModel } from "@models";
 
+// Validators
+import { validateRealmName } from "./validators";
+
 // Services
-import { DatabaseService, OperatorService, StringService } from "@services";
+import { OperatorService } from "@services";
 
 export enum RealmErrors {
     INVALID = "ERROR_REALM_INVALID",
@@ -16,30 +21,6 @@ export enum RealmErrors {
     NAME_REQUIRED = "ERROR_REALM_NAME_REQUIRED",
     NOT_FOUND = "ERROR_REALM_NOT_FOUND",
 }
-
-const validateRealmName = async (name: string) => {
-    if (
-        StringService.isStringInsideBoundaries(
-            name,
-            Statics.REALM_CLIENT_NAME_MIN_LENGTH,
-            Statics.REALM_CLIENT_NAME_MAX_LENGTH
-        ) === false
-    ) {
-        if (name.trim().length < Statics.REALM_CLIENT_NAME_MIN_LENGTH) {
-            throw new InHouseError(RealmErrors.NAME_LESS_THAN_MIN_LENGTH);
-        }
-
-        throw new InHouseError(RealmErrors.NAME_GREATER_THAN_MAX_LENGTH);
-    }
-
-    const entry = await RealmModel.findOne({
-        name: DatabaseService.generateExactInsensitiveQuery(name),
-    });
-
-    if (entry) {
-        throw new InHouseError(RealmErrors.NAME_DUPLICATED);
-    }
-};
 
 const RealmSchema = new Schema({
     name: {
