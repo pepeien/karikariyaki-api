@@ -1,13 +1,10 @@
-import { Schema, Types, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 // Types
-import { InHouseError, Statics } from "@types";
+import { Statics } from "@types";
 
-// Models
-import { OrderModel } from "@models";
-
-// Services
-import { StringService } from "@services";
+// Validators
+import { validateEventOrders } from "./validators";
 
 export enum EventErrors {
     DATE_REQUIRED = "ERROR_EVENT_DATE_REQUIRED",
@@ -18,22 +15,6 @@ export enum EventErrors {
     ORDER_INVALID = "ERROR_EVENT_ORDER_INVALID",
     ORDER_DUPLICATED = "ERROR_EVENT_ORDER_DUPLICATED",
 }
-
-const validateEventOrders = async (orderIds: Types.ObjectId[]) => {
-    for (const orderId of orderIds) {
-        const foundOrder = await OrderModel.findById(
-            StringService.toString(orderId)
-        );
-
-        if (!foundOrder) {
-            throw new InHouseError(EventErrors.ORDER_INVALID);
-        }
-
-        if (orderIds.filter((_) => _ === orderId).length > 1) {
-            throw new InHouseError(EventErrors.ORDER_DUPLICATED);
-        }
-    }
-};
 
 const EventSchema = new Schema({
     name: {
