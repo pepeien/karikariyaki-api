@@ -1,12 +1,12 @@
-import { Types } from "mongoose";
-import { StringService } from "karikarihelper";
+import { Types } from 'mongoose';
+import { StringService } from 'karikarihelper';
 
 // Types
-import { InHouseError, Statics } from "@types";
-import { OrderErrors } from ".";
+import { InHouseError, Statics } from '@types';
+import { OrderErrors } from '.';
 
 // Models
-import { EventModel, OperatorModel, RealmModel } from "../..";
+import { EventModel, OperatorModel, RealmModel } from '../..';
 
 const validateOrderEvent = async (eventId: Types.ObjectId) => {
     const foundEvent = await EventModel.findById(eventId);
@@ -37,22 +37,15 @@ const validateOrderClient = async (client: string) => {
         StringService.isStringInsideBoundaries(
             client,
             Statics.ORDER_CLIENT_NAME_MIN_LENGTH,
-            Statics.ORDER_CLIENT_NAME_MAX_LENGTH
+            Statics.ORDER_CLIENT_NAME_MAX_LENGTH,
         ) === false
     ) {
         if (client.trim().length < Statics.ORDER_CLIENT_NAME_MIN_LENGTH) {
-            throw new InHouseError(
-                OrderErrors.CLIENT_NAME_LESS_THAN_MIN_LENGTH
-            );
+            throw new InHouseError(OrderErrors.CLIENT_NAME_LESS_THAN_MIN_LENGTH);
         }
 
         throw new InHouseError(OrderErrors.CLIENT_NAME_GREATER_THAN_MAX_LENGTH);
     }
 };
 
-export {
-    validateOperatorRealm,
-    validateOrderClient,
-    validateOrderEvent,
-    validateOrderOperator,
-};
+export { validateOperatorRealm, validateOrderClient, validateOrderEvent, validateOrderOperator };

@@ -1,11 +1,7 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
 export class StringService {
-    public static isStringInsideBoundaries(
-        value: string,
-        minSize: number,
-        maxSize: number
-    ) {
+    public static isStringInsideBoundaries(value: string, minSize: number, maxSize: number) {
         if (!value) {
             return false;
         }
@@ -16,33 +12,29 @@ export class StringService {
     }
 
     public static toBoolean(value: string) {
-        return value.trim() === "true"
-            ? true
-            : value.trim() === "false"
-            ? false
-            : null;
+        return value.trim() === 'true' ? true : value.trim() === 'false' ? false : null;
     }
 
     public static toCamelCase(value: string) {
         const map = {
-            a: "á|à|ã|â|À|Á|Ã|Â",
-            e: "é|è|ê|É|È|Ê",
-            i: "í|ì|î|Í|Ì|Î",
-            o: "ó|ò|ô|õ|Ó|Ò|Ô|Õ",
-            u: "ú|ù|û|ü|Ú|Ù|Û|Ü",
-            c: "ç|Ç",
-            n: "ñ|Ñ",
+            a: 'á|à|ã|â|À|Á|Ã|Â',
+            e: 'é|è|ê|É|È|Ê',
+            i: 'í|ì|î|Í|Ì|Î',
+            o: 'ó|ò|ô|õ|Ó|Ò|Ô|Õ',
+            u: 'ú|ù|û|ü|Ú|Ù|Û|Ü',
+            c: 'ç|Ç',
+            n: 'ñ|Ñ',
         };
 
         for (const pattern in map) {
-            value = value.replace(new RegExp(pattern, "g"), pattern);
+            value = value.replace(new RegExp(pattern, 'g'), pattern);
         }
 
         return value
             .replace(/([-_][a-z]|[A-Z]|)/g, (word, index) => {
                 return index === 0 ? word.toLowerCase() : word.toUpperCase();
             })
-            .replace(/[^a-zA-Z]/g, "");
+            .replace(/[^a-zA-Z]/g, '');
     }
 
     public static toObjectId(value: string) {
@@ -94,8 +86,8 @@ export class StringService {
             return null;
         }
 
-        const rasterizedRoute = value.trim().toLowerCase().replace(/^\/+/g, "");
+        const rasterizedRoute = value.trim().toLowerCase().replace(/^\/+/g, '');
 
-        return rasterizedRoute.replace(/\/+$/, "");
+        return rasterizedRoute.replace(/\/+$/, '');
     }
 }

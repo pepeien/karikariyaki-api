@@ -4,7 +4,7 @@ export class InHouseError extends Error {
     constructor(message: string, code = 500) {
         super(message);
 
-        this.name = "InHouseError";
+        this.name = 'InHouseError';
         this.code = code;
     }
 }

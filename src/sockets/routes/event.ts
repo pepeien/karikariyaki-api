@@ -1,24 +1,18 @@
-import { Socket } from "socket.io";
-import { EventCreatableParams, Event, Operator } from "karikarihelper";
+import { Socket } from 'socket.io';
+import { EventCreatableParams, Event, Operator } from 'karikarihelper';
 
 // Types
-import { InHouseError } from "@types";
-import { EventErrors } from "@models";
+import { InHouseError } from '@types';
+import { EventErrors } from '@models';
 
 // Services
-import {
-    DateService,
-    EventService,
-    OrderService,
-    ResponseService,
-    SocketService,
-} from "@services";
+import { DateService, EventService, OrderService, ResponseService, SocketService } from '@services';
 
 // Sockets
-import { PrompterSocket, RejiSocket } from "@sockets";
+import { PrompterSocket, RejiSocket } from '@sockets';
 
 const createEvent = (socket: Socket) =>
-    socket.on("event:create", async (values: EventCreatableParams) => {
+    socket.on('event:create', async (values: EventCreatableParams) => {
         try {
             const operator = socket.data.operator as Operator;
 
@@ -31,23 +25,20 @@ const createEvent = (socket: Socket) =>
             const updatedEvents = await EventService.query({}, false);
 
             RejiSocket.namespace.emit(
-                "events:refresh",
-                ResponseService.generateSucessfulResponse(updatedEvents)
+                'events:refresh',
+                ResponseService.generateSucessfulResponse(updatedEvents),
             );
             PrompterSocket.namespace.emit(
-                "events:refresh",
-                ResponseService.generateSucessfulResponse(updatedEvents)
+                'events:refresh',
+                ResponseService.generateSucessfulResponse(updatedEvents),
             );
         } catch (error) {
-            socket.emit(
-                "event:error",
-                ResponseService.generateFailedResponse(error.message)
-            );
+            socket.emit('event:error', ResponseService.generateFailedResponse(error.message));
         }
     });
 
 const joinEvent = (socket: Socket) =>
-    socket.on("event:join", async (eventId) => {
+    socket.on('event:join', async (eventId) => {
         const operator = socket.data.operator as Operator;
 
         if (!eventId || !operator) {
@@ -69,41 +60,27 @@ const joinEvent = (socket: Socket) =>
 
             selectedEvent.orders = [];
 
-            SocketService.leaveRooms(socket, "event");
+            SocketService.leaveRooms(socket, 'event');
 
-            socket.join(
-                SocketService.generateEventRoom(eventId, operator.realm._id)
-            );
+            socket.join(SocketService.generateEventRoom(eventId, operator.realm._id));
 
-            socket.emit(
-                "event:refresh",
-                ResponseService.generateSucessfulResponse(selectedEvent)
-            );
+            socket.emit('event:refresh', ResponseService.generateSucessfulResponse(selectedEvent));
 
             const eventOrders = await OrderService.query(operator, {
                 eventId: eventId,
             });
 
-            socket.emit(
-                "orders:refresh",
-                ResponseService.generateSucessfulResponse(eventOrders)
-            );
+            socket.emit('orders:refresh', ResponseService.generateSucessfulResponse(eventOrders));
         } catch (error) {
-            socket.emit(
-                "event:error",
-                ResponseService.generateFailedResponse(error.message)
-            );
+            socket.emit('event:error', ResponseService.generateFailedResponse(error.message));
         }
     });
 
 const leaveEvent = (socket: Socket) =>
-    socket.on("event:leave", () => {
-        SocketService.leaveRooms(socket, "event");
+    socket.on('event:leave', () => {
+        SocketService.leaveRooms(socket, 'event');
 
-        socket.emit(
-            "event:refresh",
-            ResponseService.generateSucessfulResponse()
-        );
+        socket.emit('event:refresh', ResponseService.generateSucessfulResponse());
     });
 
 export { createEvent, joinEvent, leaveEvent };

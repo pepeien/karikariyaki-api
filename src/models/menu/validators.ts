@@ -1,12 +1,12 @@
-import { StringService } from "karikarihelper";
-import isBase64 from "is-base64";
+import { StringService } from 'karikarihelper';
+import isBase64 from 'is-base64';
 
 // Types
-import { InHouseError } from "@types";
-import MenuModel, { MenuErrors } from ".";
+import { InHouseError } from '@types';
+import MenuModel, { MenuErrors } from '.';
 
 // Services
-import { DatabaseService } from "@services";
+import { DatabaseService } from '@services';
 
 const validateMenuTitle = async (title: string) => {
     const foundMenu = await MenuModel.findOne({
@@ -41,7 +41,7 @@ const validateMenuRoute = async (route: string) => {
 
     const foundMenu = await MenuModel.findOne({
         route: DatabaseService.generateExactInsensitiveQuery(
-            StringService.removeLeadingAndTrailingSlashes(route)
+            StringService.removeLeadingAndTrailingSlashes(route),
         ),
     });
 

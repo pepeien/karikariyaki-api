@@ -5,24 +5,21 @@ import {
     RealmCreatableParams,
     RealmEditableParams,
     RealmQueryableParams,
-} from "karikarihelper";
+} from 'karikarihelper';
 
 // Types
-import { InHouseError, Statics } from "@types";
-import { OperatorErrors, RealmModel } from "@models";
+import { InHouseError, Statics } from '@types';
+import { OperatorErrors, RealmModel } from '@models';
 
 // Services
-import { DatabaseService, StringService } from "@services";
+import { DatabaseService, StringService } from '@services';
 
 let adminRealm: Realm | null = null;
 
 export class RealmService {
-    public static visibleParameters = ["name"];
+    public static visibleParameters = ['name'];
 
-    public static async query(
-        operator: Operator,
-        values: RealmQueryableParams
-    ) {
+    public static async query(operator: Operator, values: RealmQueryableParams) {
         if (RealmService._canPerformModifications(operator)) {
             throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
         }
@@ -43,16 +40,16 @@ export class RealmService {
             });
         }
 
-        return RealmModel.find(
-            query.length === 0 ? null : { $and: query }
-        ).select(RealmService.visibleParameters);
+        return RealmModel.find(query.length === 0 ? null : { $and: query }).select(
+            RealmService.visibleParameters,
+        );
     }
 
     public static async queryId(id: string) {
         await DatabaseService.getConnection();
 
         return RealmModel.findById(StringService.toObjectId(id)).select(
-            RealmService.visibleParameters
+            RealmService.visibleParameters,
         );
     }
 
@@ -81,16 +78,10 @@ export class RealmService {
 
         await newEntry.save();
 
-        return RealmModel.findById(newEntry._id).select(
-            RealmService.visibleParameters
-        );
+        return RealmModel.findById(newEntry._id).select(RealmService.visibleParameters);
     }
 
-    public static async update(
-        operator: Operator,
-        id: string,
-        values: RealmEditableParams
-    ) {
+    public static async update(operator: Operator, id: string, values: RealmEditableParams) {
         if (RealmService._canPerformModifications(operator)) {
             throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
         }
@@ -106,7 +97,7 @@ export class RealmService {
                     name: values.name?.trim(),
                 },
             },
-            { runValidators: true }
+            { runValidators: true },
         ).select(RealmService.visibleParameters);
     }
 
@@ -119,9 +110,7 @@ export class RealmService {
 
         const realmObjectId = StringService.toObjectId(id);
 
-        return RealmModel.findByIdAndDelete(realmObjectId).select(
-            RealmService.visibleParameters
-        );
+        return RealmModel.findByIdAndDelete(realmObjectId).select(RealmService.visibleParameters);
     }
 
     private static _canPerformModifications(operator: Operator) {

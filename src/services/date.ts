@@ -1,4 +1,4 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 
 //TODO: Convert to Epoch
 export class DateService {
@@ -13,7 +13,7 @@ export class DateService {
     public static isToday(target: Date): boolean {
         const splittedTarget = DateService.splitISODate(target.toISOString());
         const splittedNow = DateService.splitISODate(
-            DateTime.now().setZone("America/Sao_Paulo").toISO()
+            DateTime.now().setZone('America/Sao_Paulo').toISO(),
         );
 
         if (splittedTarget[0] !== splittedNow[0]) {
@@ -47,6 +47,6 @@ export class DateService {
          * Date format: YYYY-MM-DD
          * Result: [YYYY, MM, DD]
          */
-        return target.split("T")[0].split("-");
+        return target.split('T')[0].split('-');
     }
 }

@@ -1,30 +1,25 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "rootDir": ".",
-    "outDir": "./dist",
-    "baseUrl": ".",
-    "paths": {
-      "@enums": ["src/enums/index.ts"],
-      "@models": ["src/models/index.ts"],
-      "@routes": ["src/routes/index.ts"],
-      "@services": ["src/services/index.ts"],
-      "@sockets": ["src/sockets/index.ts"],
-      "@types": ["src/types/index.ts"]
+    "compilerOptions": {
+        "allowJs": true,
+        "rootDir": ".",
+        "outDir": "./dist",
+        "baseUrl": ".",
+        "paths": {
+            "@enums": ["src/enums/index.ts"],
+            "@models": ["src/models/index.ts"],
+            "@routes": ["src/routes/index.ts"],
+            "@services": ["src/services/index.ts"],
+            "@sockets": ["src/sockets/index.ts"],
+            "@types": ["src/types/index.ts"]
+        },
+        "sourceMap": true,
+        "declaration": true,
+        "removeComments": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
     },
-    "sourceMap": true,
-    "declaration": true,
-    "removeComments": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": [
-    "src/**/*.ts",
-    "**/*.spec.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "include": ["src/**/*.ts", "**/*.spec.ts"],
+    "exclude": ["node_modules"]
 }

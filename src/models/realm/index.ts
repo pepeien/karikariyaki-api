@@ -1,25 +1,25 @@
-import { Schema, model } from "mongoose";
-import { OperatorRole } from "karikarihelper";
+import { Schema, model } from 'mongoose';
+import { OperatorRole } from 'karikarihelper';
 
 // Types
-import { Statics } from "@types";
+import { Statics } from '@types';
 
 // Models
-import { OperatorModel } from "@models";
+import { OperatorModel } from '@models';
 
 // Validators
-import { validateRealmName } from "./validators";
+import { validateRealmName } from './validators';
 
 // Services
-import { OperatorService } from "@services";
+import { OperatorService } from '@services';
 
 export enum RealmErrors {
-    INVALID = "ERROR_REALM_INVALID",
-    NAME_DUPLICATED = "ERROR_REALM_NAME_DUPLICATED",
-    NAME_GREATER_THAN_MAX_LENGTH = "ERROR_REALM_NAME_GREATER_THAN_MAX_LENGTH",
-    NAME_LESS_THAN_MIN_LENGTH = "ERROR_REALM_NAME_LESS_THAN_MIN_LENGTH",
-    NAME_REQUIRED = "ERROR_REALM_NAME_REQUIRED",
-    NOT_FOUND = "ERROR_REALM_NOT_FOUND",
+    INVALID = 'ERROR_REALM_INVALID',
+    NAME_DUPLICATED = 'ERROR_REALM_NAME_DUPLICATED',
+    NAME_GREATER_THAN_MAX_LENGTH = 'ERROR_REALM_NAME_GREATER_THAN_MAX_LENGTH',
+    NAME_LESS_THAN_MIN_LENGTH = 'ERROR_REALM_NAME_LESS_THAN_MIN_LENGTH',
+    NAME_REQUIRED = 'ERROR_REALM_NAME_REQUIRED',
+    NOT_FOUND = 'ERROR_REALM_NOT_FOUND',
 }
 
 const RealmSchema = new Schema({

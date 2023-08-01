@@ -1,29 +1,27 @@
-import { Types } from "mongoose";
-import { StringService } from "karikarihelper";
-import isBase64 from "is-base64";
+import { Types } from 'mongoose';
+import { StringService } from 'karikarihelper';
+import isBase64 from 'is-base64';
 
 // Types
-import { Statics, InHouseError } from "@types";
-import OperatorModel, { OperatorErrors } from ".";
+import { Statics, InHouseError } from '@types';
+import OperatorModel, { OperatorErrors } from '.';
 
 // Models
-import RealmModel from "../realm";
+import RealmModel from '../realm';
 
 // Services
-import { DatabaseService } from "@services";
+import { DatabaseService } from '@services';
 
 const validateOperatorUserName = async (name: string) => {
     if (
         StringService.isStringInsideBoundaries(
             name,
             Statics.USER_NAME_MIN_LENGTH,
-            Statics.USER_NAME_MAX_LENGTH
+            Statics.USER_NAME_MAX_LENGTH,
         ) === false
     ) {
         if (name.trim().length < Statics.USER_NAME_MIN_LENGTH) {
-            throw new InHouseError(
-                OperatorErrors.USER_NAME_GREATER_THAN_MAX_LENGTH
-            );
+            throw new InHouseError(OperatorErrors.USER_NAME_GREATER_THAN_MAX_LENGTH);
         }
 
         throw new InHouseError(OperatorErrors.USER_NAME_LESS_THAN_MIN_LENGTH);
@@ -43,18 +41,14 @@ const validateOperatorDisplayName = async (displayName: string) => {
         StringService.isStringInsideBoundaries(
             displayName,
             Statics.DISPLAY_NAME_MIN_LENGTH,
-            Statics.DISPLAY_NAME_MAX_LENGTH
+            Statics.DISPLAY_NAME_MAX_LENGTH,
         ) === false
     ) {
         if (displayName.trim().length < Statics.DISPLAY_NAME_MIN_LENGTH) {
-            throw new InHouseError(
-                OperatorErrors.DISPLAY_NAME_LESS_THAN_MIN_LENGTH
-            );
+            throw new InHouseError(OperatorErrors.DISPLAY_NAME_LESS_THAN_MIN_LENGTH);
         }
 
-        throw new InHouseError(
-            OperatorErrors.DISPLAY_NAME_GREATER_THAN_MAX_LENGTH
-        );
+        throw new InHouseError(OperatorErrors.DISPLAY_NAME_GREATER_THAN_MAX_LENGTH);
     }
 };
 

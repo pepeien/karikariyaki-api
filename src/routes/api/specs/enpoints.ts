@@ -1,20 +1,20 @@
-import { Endpoint } from "pepefolio";
+import { Endpoint } from 'pepefolio';
 
 export default [
     {
-        name: "Sign In",
-        path: "operator/sign-in",
+        name: 'Sign In',
+        path: 'operator/sign-in',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "POST",
+                method: 'POST',
                 parameters: {
                     body: [
                         {
-                            label: "userName",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'userName',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
@@ -22,103 +22,103 @@ export default [
         ],
     },
     {
-        name: "Sign Out",
-        path: "operator/sign-out",
+        name: 'Sign Out',
+        path: 'operator/sign-out',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "POST",
+                method: 'POST',
             },
         ],
     },
     {
-        name: "Event Registry",
-        path: "admin/registry/event",
+        name: 'Event Registry',
+        path: 'admin/registry/event',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "GET",
+                method: 'GET',
                 parameters: {
                     query: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "name",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'name',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "date",
-                            defaultValue: "",
-                            type: "Date",
+                            label: 'date',
+                            defaultValue: '',
+                            type: 'Date',
                         },
                         {
-                            label: "isOpen",
-                            defaultValue: "",
-                            type: "boolean",
+                            label: 'isOpen',
+                            defaultValue: '',
+                            type: 'boolean',
                         },
                     ],
                 },
             },
             {
-                method: "POST",
+                method: 'POST',
                 parameters: {
                     body: [
                         {
-                            label: "name",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'name',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "date",
-                            defaultValue: "",
-                            type: "Date",
+                            label: 'date',
+                            defaultValue: '',
+                            type: 'Date',
                         },
                         {
-                            label: "isOpen",
-                            defaultValue: "",
-                            type: "boolean",
+                            label: 'isOpen',
+                            defaultValue: '',
+                            type: 'boolean',
                         },
                     ],
                 },
             },
             {
-                method: "PATCH",
+                method: 'PATCH',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                     body: [
                         {
-                            label: "name",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'name',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "isOpen",
-                            defaultValue: "",
-                            type: "boolean",
+                            label: 'isOpen',
+                            defaultValue: '',
+                            type: 'boolean',
                         },
                     ],
                 },
             },
             {
-                method: "DELETE",
+                method: 'DELETE',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
@@ -126,97 +126,97 @@ export default [
         ],
     },
     {
-        name: "Event Order Registry",
-        path: "admin/registry/event/order",
+        name: 'Event Order Registry',
+        path: 'admin/registry/event/order',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "GET",
+                method: 'GET',
                 parameters: {
                     query: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "eventId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'eventId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "status",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'status',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "operatorId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'operatorId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "clientName",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'clientName',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                method: "POST",
+                method: 'POST',
                 parameters: {
                     body: [
                         {
-                            label: "eventId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'eventId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "items",
-                            defaultValue: "",
-                            type: "Items[]",
+                            label: 'items',
+                            defaultValue: '',
+                            type: 'Items[]',
                         },
                         {
-                            label: "operatorId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'operatorId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "status",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'status',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                method: "PATCH",
+                method: 'PATCH',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                     body: [
                         {
-                            label: "status",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'status',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                method: "DELETE",
+                method: 'DELETE',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
@@ -224,30 +224,30 @@ export default [
         ],
     },
     {
-        name: "Event Order Status",
-        path: "admin/registry/event/order/status",
+        name: 'Event Order Status',
+        path: 'admin/registry/event/order/status',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "GET",
+                method: 'GET',
             },
         ],
     },
     {
-        name: "Event Order Status",
-        path: "admin/registry/event/order/qr",
+        name: 'Event Order Status',
+        path: 'admin/registry/event/order/qr',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "GET",
+                method: 'GET',
                 parameters: {
                     search: [
                         {
-                            label: "orderId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'orderId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
@@ -255,101 +255,101 @@ export default [
         ],
     },
     {
-        name: "Menu Registry",
-        path: "admin/registry/menu",
+        name: 'Menu Registry',
+        path: 'admin/registry/menu',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                name: "Search Menus",
-                method: "GET",
+                name: 'Search Menus',
+                method: 'GET',
                 parameters: {
                     query: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "title",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'title',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "parentId",
-                            defaultValue: "",
-                            type: "string",
-                        },
-                    ],
-                },
-            },
-            {
-                name: "Create Menu",
-                method: "POST",
-                parameters: {
-                    body: [
-                        {
-                            label: "title",
-                            defaultValue: "",
-                            type: "string",
-                        },
-                        {
-                            label: "icon",
-                            defaultValue: "",
-                            type: "base64",
-                        },
-                        {
-                            label: "route",
-                            defaultValue: "",
-                            type: "string",
-                        },
-                        {
-                            label: "parentId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'parentId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                name: "Update Menu",
-                method: "UPDATE",
+                name: 'Create Menu',
+                method: 'POST',
                 parameters: {
                     body: [
                         {
-                            label: "title",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'title',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "icon",
-                            defaultValue: "",
-                            type: "base64",
+                            label: 'icon',
+                            defaultValue: '',
+                            type: 'base64',
                         },
                         {
-                            label: "route",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'route',
+                            defaultValue: '',
+                            type: 'string',
+                        },
+                        {
+                            label: 'parentId',
+                            defaultValue: '',
+                            type: 'string',
+                        },
+                    ],
+                },
+            },
+            {
+                name: 'Update Menu',
+                method: 'UPDATE',
+                parameters: {
+                    body: [
+                        {
+                            label: 'title',
+                            defaultValue: '',
+                            type: 'string',
+                        },
+                        {
+                            label: 'icon',
+                            defaultValue: '',
+                            type: 'base64',
+                        },
+                        {
+                            label: 'route',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                name: "Delete Menu",
-                method: "DELETE",
+                name: 'Delete Menu',
+                method: 'DELETE',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
@@ -357,114 +357,114 @@ export default [
         ],
     },
     {
-        name: "Operator Menus",
-        path: "admin/registry/menu/self",
+        name: 'Operator Menus',
+        path: 'admin/registry/menu/self',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                name: "Operator Menus",
-                method: "GET",
+                name: 'Operator Menus',
+                method: 'GET',
             },
         ],
     },
     {
-        name: "Operator Registry",
-        path: "admin/registry/operator",
+        name: 'Operator Registry',
+        path: 'admin/registry/operator',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "GET",
+                method: 'GET',
                 parameters: {
                     query: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "realmId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'realmId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "displayName",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'displayName',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                method: "POST",
+                method: 'POST',
                 parameters: {
                     body: [
                         {
-                            label: "userName",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'userName',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "displayName",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'displayName',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "realmId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'realmId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "role",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'role',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "photo",
-                            defaultValue: "",
-                            type: "base64",
+                            label: 'photo',
+                            defaultValue: '',
+                            type: 'base64',
                         },
                     ],
                 },
             },
             {
-                method: "PATCH",
+                method: 'PATCH',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                     body: [
                         {
-                            label: "displayName",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'displayName',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "role",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'role',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "photo",
-                            defaultValue: "",
-                            type: "base64",
+                            label: 'photo',
+                            defaultValue: '',
+                            type: 'base64',
                         },
                     ],
                 },
             },
             {
-                method: "DELETE",
+                method: 'DELETE',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
@@ -472,114 +472,114 @@ export default [
         ],
     },
     {
-        name: "Operator Roles",
-        path: "admin/registry/operator/roles",
+        name: 'Operator Roles',
+        path: 'admin/registry/operator/roles',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "GET",
+                method: 'GET',
             },
         ],
     },
     {
-        name: "Operator Data",
-        path: "admin/registry/operator/self",
+        name: 'Operator Data',
+        path: 'admin/registry/operator/self',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "GET",
+                method: 'GET',
             },
         ],
     },
     {
-        name: "Product Registry",
-        path: "admin/registry/product",
+        name: 'Product Registry',
+        path: 'admin/registry/product',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "GET",
+                method: 'GET',
                 parameters: {
                     query: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "name",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'name',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "realmId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'realmId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                method: "POST",
+                method: 'POST',
                 parameters: {
                     body: [
                         {
-                            label: "name",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'name',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "realmId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'realmId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "ingredients",
-                            defaultValue: "",
-                            type: "Ingredients[]",
+                            label: 'ingredients',
+                            defaultValue: '',
+                            type: 'Ingredients[]',
                         },
                     ],
                 },
             },
             {
-                method: "PATCH",
+                method: 'PATCH',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                     body: [
                         {
-                            label: "name",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'name',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "realmId",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'realmId',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "ingredients",
-                            defaultValue: "",
-                            type: "Ingredients[]",
+                            label: 'ingredients',
+                            defaultValue: '',
+                            type: 'Ingredients[]',
                         },
                     ],
                 },
             },
             {
-                method: "DELETE",
+                method: 'DELETE',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
@@ -587,67 +587,67 @@ export default [
         ],
     },
     {
-        name: "Realm Registry",
-        path: "admin/registry/realm",
+        name: 'Realm Registry',
+        path: 'admin/registry/realm',
         version: 1,
-        credentials: "include",
+        credentials: 'include',
         variants: [
             {
-                method: "GET",
+                method: 'GET',
                 parameters: {
                     query: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                         {
-                            label: "name",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'name',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                method: "POST",
+                method: 'POST',
                 parameters: {
                     body: [
                         {
-                            label: "name",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'name',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                method: "PATCH",
+                method: 'PATCH',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                     body: [
                         {
-                            label: "name",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'name',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },
             },
             {
-                method: "DELETE",
+                method: 'DELETE',
                 parameters: {
                     search: [
                         {
-                            label: "id",
-                            defaultValue: "",
-                            type: "string",
+                            label: 'id',
+                            defaultValue: '',
+                            type: 'string',
                         },
                     ],
                 },

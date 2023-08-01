@@ -1,1 +1,1 @@
-export { OrderStatus } from "./order-status.enum";
+export { OrderStatus } from './order-status.enum';

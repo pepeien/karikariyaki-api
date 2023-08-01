@@ -1,14 +1,14 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 // Services
-import { DateService } from "@services";
+import { DateService } from '@services';
 
 const dbURI = `mongodb://${
     process.env.DATABASE_HOST.trim().length > 0 &&
     process.env.DATABASE_PORT.trim().length > 0 &&
     process.env.DATABASE_TABLE.trim().length > 0
         ? `${process.env.DATABASE_HOST.trim()}:${process.env.DATABASE_PORT.trim()}/${process.env.DATABASE_TABLE.trim()}`
-        : "127.0.0.1:27017/karikariyaki"
+        : '127.0.0.1:27017/karikariyaki'
 }`;
 
 let connection = mongoose.connect(dbURI, {
@@ -31,14 +31,14 @@ export class DatabaseService {
     public static generateBroadQuery(value: string) {
         return {
             $regex: value.trim(),
-            $options: "i",
+            $options: 'i',
         };
     }
 
     public static generateExactInsensitiveQuery(value: string) {
         return {
             $regex: `^${value.trim()}$`,
-            $options: "i",
+            $options: 'i',
         };
     }
 

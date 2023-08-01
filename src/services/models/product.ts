@@ -1,33 +1,30 @@
-import { PopulateOptions } from "mongoose";
+import { PopulateOptions } from 'mongoose';
 import {
     Operator,
     OperatorRole,
     ProductCreatableParams,
     ProductEditableParams,
     ProductQueryableParams,
-} from "karikarihelper";
+} from 'karikarihelper';
 
 // Types
-import { OperatorErrors, ProductModel } from "@models";
-import { InHouseError } from "@types";
+import { OperatorErrors, ProductModel } from '@models';
+import { InHouseError } from '@types';
 
 // Services
-import { DatabaseService, StringService } from "@services";
+import { DatabaseService, StringService } from '@services';
 
 export class ProductService {
-    public static visibleParameters = ["name", "realm", "ingredients"];
+    public static visibleParameters = ['name', 'realm', 'ingredients'];
 
     private static _populateOptions = [
         {
-            path: "realm",
-            select: "name",
+            path: 'realm',
+            select: 'name',
         },
     ] as PopulateOptions[];
 
-    public static async query(
-        operator: Operator,
-        values: ProductQueryableParams
-    ) {
+    public static async query(operator: Operator, values: ProductQueryableParams) {
         await DatabaseService.getConnection();
 
         const query = [];
@@ -75,19 +72,14 @@ export class ProductService {
             .populate(ProductService._populateOptions);
     }
 
-    public static async save(
-        operator: Operator,
-        values: ProductCreatableParams
-    ) {
+    public static async save(operator: Operator, values: ProductCreatableParams) {
         await DatabaseService.getConnection();
 
         const newEntry = new ProductModel();
 
         newEntry.name = values.name.trim();
         newEntry.realm = StringService.toObjectId(
-            operator.role === OperatorRole.ADMIN
-                ? values.realmId
-                : operator.realm._id
+            operator.role === OperatorRole.ADMIN ? values.realmId : operator.realm._id,
         );
         newEntry.ingredients = values.ingredients ?? [];
 
@@ -98,20 +90,13 @@ export class ProductService {
             .populate(ProductService._populateOptions);
     }
 
-    public static async update(
-        operator: Operator,
-        id: string,
-        values: ProductEditableParams
-    ) {
+    public static async update(operator: Operator, id: string, values: ProductEditableParams) {
         await DatabaseService.getConnection();
 
         if (operator.role !== OperatorRole.ADMIN) {
             const foundOperator = await ProductModel.findById(id);
 
-            if (
-                operator.realm._id.toString() !==
-                foundOperator.realm._id.toString()
-            ) {
+            if (operator.realm._id.toString() !== foundOperator.realm._id.toString()) {
                 throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
             }
         }
@@ -126,7 +111,7 @@ export class ProductService {
                     ingredients: values.ingredients ?? undefined,
                 },
             },
-            { runValidators: true }
+            { runValidators: true },
         )
             .select(ProductService.visibleParameters)
             .populate(ProductService._populateOptions);
@@ -138,10 +123,7 @@ export class ProductService {
         if (operator.role !== OperatorRole.ADMIN) {
             const foundProduct = await ProductService.queryById(id);
 
-            if (
-                operator.realm._id.toString() !==
-                foundProduct.realm._id.toString()
-            ) {
+            if (operator.realm._id.toString() !== foundProduct.realm._id.toString()) {
                 throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
             }
         }

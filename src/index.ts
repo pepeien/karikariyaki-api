@@ -1,28 +1,28 @@
-require("module-alias/register");
+require('module-alias/register');
 
-import express from "express";
-import dotenv from "dotenv";
-import morgan from "morgan";
-import cors from "cors";
-import cookieParser from "cookie-parser";
+import express from 'express';
+import dotenv from 'dotenv';
+import morgan from 'morgan';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
 // Setup
-import { app, server } from "./setup";
+import { app, server } from './setup';
 
 // Routes
-import routes from "@routes";
+import routes from '@routes';
 
 // Socket Setup
-import { ClientSocket, PrompterSocket, RejiSocket } from "@sockets";
+import { ClientSocket, PrompterSocket, RejiSocket } from '@sockets';
 
 const allowedDomains = process.env.ORIGIN_ADDRESS
-    ? process.env.ORIGIN_ADDRESS.split(" ")
-    : ["http://localhost"];
+    ? process.env.ORIGIN_ADDRESS.split(' ')
+    : ['http://localhost'];
 
 // Add-ons
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 app.use(
     cors({
         origin: (origin, callback) => {
@@ -39,13 +39,13 @@ app.use(
             return callback(null, true);
         },
         credentials: true,
-    })
+    }),
 );
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json({ limit: "5mb" }));
+app.use(express.json({ limit: '5mb' }));
 
-app.use("/karikariyaki", routes);
+app.use('/karikariyaki', routes);
 
 // Sockets
 

@@ -1,25 +1,16 @@
-import { Socket } from "socket.io";
-import {
-    EventOrderCreatableParams,
-    EventOrderEditableParams,
-    Operator,
-} from "karikarihelper";
+import { Socket } from 'socket.io';
+import { EventOrderCreatableParams, EventOrderEditableParams, Operator } from 'karikarihelper';
 
 // Types
-import { OrderStatus } from "@enums";
-import { InHouseError } from "@types";
-import { EventErrors, OrderErrors } from "@models";
+import { OrderStatus } from '@enums';
+import { InHouseError } from '@types';
+import { EventErrors, OrderErrors } from '@models';
 
 // Services
-import {
-    EventService,
-    OrderService,
-    ResponseService,
-    SocketService,
-} from "@services";
+import { EventService, OrderService, ResponseService, SocketService } from '@services';
 
 const createOrder = (socket: Socket) =>
-    socket.on("order:create", async (values: EventOrderCreatableParams) => {
+    socket.on('order:create', async (values: EventOrderCreatableParams) => {
         const operator = socket.data.operator as Operator;
         const eventId = values.eventId;
         const items = values.items;
@@ -49,15 +40,12 @@ const createOrder = (socket: Socket) =>
 
             await SocketService.refreshOrders(eventId, operator);
         } catch (error) {
-            socket.emit(
-                "order:error",
-                ResponseService.generateFailedResponse(error.message)
-            );
+            socket.emit('order:error', ResponseService.generateFailedResponse(error.message));
         }
     });
 
 const deleteOrder = (socket: Socket) =>
-    socket.on("order:delete", async (id: string) => {
+    socket.on('order:delete', async (id: string) => {
         const operator = socket.data.operator as Operator;
 
         try {
@@ -71,9 +59,7 @@ const deleteOrder = (socket: Socket) =>
                 throw new InHouseError(OrderErrors.NOT_FOUND);
             }
 
-            const foundEvent = await EventService.queryById(
-                foundOrder.event._id.toString()
-            );
+            const foundEvent = await EventService.queryById(foundOrder.event._id.toString());
 
             if (!foundEvent) {
                 throw new InHouseError(EventErrors.NOT_FOUND);
@@ -89,70 +75,53 @@ const deleteOrder = (socket: Socket) =>
 
             await OrderService.delete(operator, id);
 
-            await SocketService.refreshOrders(
-                foundOrder.event._id.toString(),
-                operator
-            );
+            await SocketService.refreshOrders(foundOrder.event._id.toString(), operator);
         } catch (error) {
-            socket.emit(
-                "order:error",
-                ResponseService.generateFailedResponse(error.message)
-            );
+            socket.emit('order:error', ResponseService.generateFailedResponse(error.message));
         }
     });
 
 const editOrder = (socket: Socket) =>
-    socket.on(
-        "order:edit",
-        async (order: { id: string; values: EventOrderEditableParams }) => {
-            const operator = socket.data.operator as Operator;
+    socket.on('order:edit', async (order: { id: string; values: EventOrderEditableParams }) => {
+        const operator = socket.data.operator as Operator;
 
-            try {
-                if (!operator) {
-                    throw new InHouseError(OrderErrors.INVALID);
-                }
-
-                const foundOrder = await OrderService.queryById(order.id);
-
-                if (!foundOrder) {
-                    throw new InHouseError(OrderErrors.NOT_FOUND);
-                }
-
-                const foundEvent = await EventService.queryById(
-                    foundOrder.event._id.toString()
-                );
-
-                if (!foundEvent) {
-                    throw new InHouseError(EventErrors.NOT_FOUND);
-                }
-
-                if (foundEvent.isOpen === false) {
-                    throw new InHouseError(EventErrors.NOT_ACTIVE);
-                }
-
-                if (foundOrder.status === OrderStatus.PICKED_UP) {
-                    throw new InHouseError(OrderErrors.PICKED_UP);
-                }
-
-                await OrderService.update(operator, order.id, order.values);
-
-                await SocketService.refreshOrders(
-                    foundEvent._id.toString(),
-                    operator
-                );
-
-                await SocketService.refreshOrder(order.id);
-            } catch (error) {
-                socket.emit(
-                    "order:error",
-                    ResponseService.generateFailedResponse(error.message)
-                );
+        try {
+            if (!operator) {
+                throw new InHouseError(OrderErrors.INVALID);
             }
+
+            const foundOrder = await OrderService.queryById(order.id);
+
+            if (!foundOrder) {
+                throw new InHouseError(OrderErrors.NOT_FOUND);
+            }
+
+            const foundEvent = await EventService.queryById(foundOrder.event._id.toString());
+
+            if (!foundEvent) {
+                throw new InHouseError(EventErrors.NOT_FOUND);
+            }
+
+            if (foundEvent.isOpen === false) {
+                throw new InHouseError(EventErrors.NOT_ACTIVE);
+            }
+
+            if (foundOrder.status === OrderStatus.PICKED_UP) {
+                throw new InHouseError(OrderErrors.PICKED_UP);
+            }
+
+            await OrderService.update(operator, order.id, order.values);
+
+            await SocketService.refreshOrders(foundEvent._id.toString(), operator);
+
+            await SocketService.refreshOrder(order.id);
+        } catch (error) {
+            socket.emit('order:error', ResponseService.generateFailedResponse(error.message));
         }
-    );
+    });
 
 const joinOrder = (socket: Socket) => {
-    socket.on("order:join", async (id: string) => {
+    socket.on('order:join', async (id: string) => {
         try {
             const foundOrder = await OrderService.queryById(id);
 
@@ -160,25 +129,19 @@ const joinOrder = (socket: Socket) => {
                 throw new InHouseError(OrderErrors.NOT_FOUND);
             }
 
-            SocketService.leaveRooms(socket, "event");
+            SocketService.leaveRooms(socket, 'event');
 
             socket.join(
                 SocketService.generateEventOrderRoom(
                     foundOrder.event._id.toString(),
                     foundOrder.realm._id.toString(),
-                    foundOrder._id.toString()
-                )
+                    foundOrder._id.toString(),
+                ),
             );
 
-            socket.emit(
-                "order:refresh",
-                ResponseService.generateSucessfulResponse(foundOrder)
-            );
+            socket.emit('order:refresh', ResponseService.generateSucessfulResponse(foundOrder));
         } catch (error) {
-            socket.emit(
-                "order:error",
-                ResponseService.generateFailedResponse(error.message)
-            );
+            socket.emit('order:error', ResponseService.generateFailedResponse(error.message));
         }
     });
 };

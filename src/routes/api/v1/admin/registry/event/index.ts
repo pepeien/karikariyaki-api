@@ -1,16 +1,16 @@
-import { Router } from "express";
-import { Operator } from "karikarihelper";
+import { Router } from 'express';
+import { Operator } from 'karikarihelper';
 
 // Types
-import { EventErrors } from "@models";
-import { InHouseError } from "@types";
+import { EventErrors } from '@models';
+import { InHouseError } from '@types';
 
 // Services
-import { EventService, RequestService, ResponseService } from "@services";
+import { EventService, RequestService, ResponseService } from '@services';
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const foundEvents = await EventService.query({
             id: RequestService.queryParamToString(req.query.id),
@@ -19,17 +19,13 @@ router.get("/", async (req, res) => {
             isOpen: RequestService.queryParamToBoolean(req.query.isOpen),
         });
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(foundEvents)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(foundEvents));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const name = req.body.name;
         const date = RequestService.queryParamToDate(req.body.date);
@@ -39,26 +35,19 @@ router.post("/", async (req, res) => {
             throw new InHouseError(EventErrors.INVALID, 400);
         }
 
-        const response = await EventService.save(
-            res.locals.operator as Operator,
-            {
-                name: name,
-                date: date,
-                isOpen: isOpen,
-            }
-        );
+        const response = await EventService.save(res.locals.operator as Operator, {
+            name: name,
+            date: date,
+            isOpen: isOpen,
+        });
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch('/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const name = req.body.name;
@@ -68,26 +57,18 @@ router.patch("/:id", async (req, res) => {
             throw new InHouseError(EventErrors.INVALID, 400);
         }
 
-        const response = await EventService.update(
-            res.locals.operator as Operator,
-            id,
-            {
-                name: name,
-                isOpen: isOpen,
-            }
-        );
+        const response = await EventService.update(res.locals.operator as Operator, id, {
+            name: name,
+            isOpen: isOpen,
+        });
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id;
 
@@ -95,22 +76,15 @@ router.delete("/:id", async (req, res) => {
             throw new InHouseError(EventErrors.INVALID, 400);
         }
 
-        const response = await EventService.delete(
-            res.locals.operator as Operator,
-            id
-        );
+        const response = await EventService.delete(res.locals.operator as Operator, id);
 
         if (!response) {
             throw new InHouseError(EventErrors.NOT_FOUND, 404);
         }
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
