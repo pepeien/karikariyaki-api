@@ -1,4 +1,4 @@
-import { PopulateOptions } from "mongoose";
+import { PopulateOptions } from 'mongoose';
 import {
     EventOrderCreatableParams,
     EventOrderEditableParams,
@@ -6,50 +6,42 @@ import {
     IngredientType,
     Operator,
     OperatorRole,
-} from "karikarihelper";
+} from 'karikarihelper';
 
 // Types
-import { InHouseError } from "@types";
-import { EventModel, OperatorErrors, OrderErrors, OrderModel } from "@models";
+import { InHouseError } from '@types';
+import { EventModel, OperatorErrors, OrderErrors, OrderModel } from '@models';
 
 // Services
-import {
-    DatabaseService,
-    OperatorService,
-    ProductService,
-    StringService,
-} from "@services";
+import { DatabaseService, OperatorService, ProductService, StringService } from '@services';
 
 export class OrderService {
-    public static visibleParameters = ["realm", "status", "client"];
+    public static visibleParameters = ['realm', 'status', 'client'];
 
     private static _populateOptions = [
         {
-            path: "event",
-            select: ["name", "date"],
+            path: 'event',
+            select: ['name', 'date'],
         },
         {
-            path: "operator",
-            select: "displayName",
+            path: 'operator',
+            select: 'displayName',
         },
         {
-            path: "realm",
-            select: "name",
+            path: 'realm',
+            select: 'name',
         },
         {
-            path: "items",
-            select: ["product", "modifications"],
+            path: 'items',
+            select: ['product', 'modifications'],
             populate: {
-                path: "product",
-                select: "name",
+                path: 'product',
+                select: 'name',
             },
         },
     ] as PopulateOptions[];
 
-    public static async query(
-        operator: Operator,
-        values: EventOrderQueryableParams
-    ) {
+    public static async query(operator: Operator, values: EventOrderQueryableParams) {
         await DatabaseService.getConnection();
 
         const query = [];
@@ -107,10 +99,7 @@ export class OrderService {
             .populate(OrderService._populateOptions);
     }
 
-    public static async save(
-        operator: Operator,
-        values: EventOrderCreatableParams
-    ) {
+    public static async save(operator: Operator, values: EventOrderCreatableParams) {
         await DatabaseService.getConnection();
 
         const newEntry = new OrderModel();
@@ -120,9 +109,7 @@ export class OrderService {
 
         const foundOperator =
             operator.role === OperatorRole.ADMIN && values.operatorId
-                ? (
-                      await OperatorService.queryById(values.operatorId)
-                  ).toObject<Operator>()
+                ? (await OperatorService.queryById(values.operatorId)).toObject<Operator>()
                 : operator;
 
         if (!foundOperator) {
@@ -135,9 +122,8 @@ export class OrderService {
 
         for (const item of values.items) {
             const isModificationValid =
-                item.modifications.filter(
-                    (entry) => entry.type === IngredientType.BASE
-                ).length === 0;
+                item.modifications.filter((entry) => entry.type === IngredientType.BASE).length ===
+                0;
 
             if (isModificationValid === false) {
                 throw new InHouseError(OrderErrors.REALM_INVALID, 400);
@@ -145,10 +131,7 @@ export class OrderService {
 
             const foundItem = await ProductService.queryById(item.productId);
 
-            if (
-                foundItem.realm._id.toString() !==
-                foundOperator.realm._id.toString()
-            ) {
+            if (foundItem.realm._id.toString() !== foundOperator.realm._id.toString()) {
                 throw new InHouseError(OrderErrors.REALM_INVALID, 400);
             }
 
@@ -165,7 +148,7 @@ export class OrderService {
                     orders: newEntry._id,
                 },
             },
-            { runValidators: true }
+            { runValidators: true },
         );
 
         await newEntry.save();
@@ -175,20 +158,13 @@ export class OrderService {
             .populate(OrderService._populateOptions);
     }
 
-    public static async update(
-        operator: Operator,
-        id: string,
-        values: EventOrderEditableParams
-    ) {
+    public static async update(operator: Operator, id: string, values: EventOrderEditableParams) {
         await DatabaseService.getConnection();
 
         if (operator.role !== OperatorRole.ADMIN) {
             const foundOperator = await OrderService.queryById(id);
 
-            if (
-                operator.realm._id.toString() !==
-                foundOperator.realm._id.toString()
-            ) {
+            if (operator.realm._id.toString() !== foundOperator.realm._id.toString()) {
                 throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
             }
         }
@@ -200,7 +176,7 @@ export class OrderService {
                     status: values.status,
                 },
             },
-            { runValidators: true }
+            { runValidators: true },
         )
             .select(OrderService.visibleParameters)
             .populate(OrderService._populateOptions);
@@ -212,10 +188,7 @@ export class OrderService {
         if (operator.role !== OperatorRole.ADMIN) {
             const foundOperator = await OrderService.queryById(id);
 
-            if (
-                operator.realm._id.toString() !==
-                foundOperator.realm._id.toString()
-            ) {
+            if (operator.realm._id.toString() !== foundOperator.realm._id.toString()) {
                 throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
             }
         }
@@ -230,7 +203,7 @@ export class OrderService {
                 $pull: {
                     orders: orderId,
                 },
-            }
+            },
         );
 
         return OrderModel.findByIdAndDelete(orderId)

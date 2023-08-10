@@ -1,16 +1,16 @@
-import { Socket } from "socket.io";
-import { Operator } from "karikarihelper";
+import { Socket } from 'socket.io';
+import { Operator } from 'karikarihelper';
 
 // Types
-import { InHouseError } from "@types";
-import { OrderErrors } from "@models";
+import { InHouseError } from '@types';
+import { OrderErrors } from '@models';
 
 // Sockets
-import { RejiSocket, PrompterSocket, ClientSocket } from "@sockets";
+import { RejiSocket, PrompterSocket, ClientSocket } from '@sockets';
 
 // Services
-import { OrderService } from "./models/order";
-import { ResponseService } from "./response";
+import { OrderService } from './models/order';
+import { ResponseService } from './response';
 
 export class SocketService {
     public static leaveRooms(socket: Socket, roomPrefix: string) {
@@ -27,23 +27,14 @@ export class SocketService {
             realmId: operator.realm._id,
         });
 
-        const roomAddress = SocketService.generateEventRoom(
-            eventId,
-            operator.realm._id
-        );
+        const roomAddress = SocketService.generateEventRoom(eventId, operator.realm._id);
 
         RejiSocket.namespace
             .to(roomAddress)
-            .emit(
-                "orders:refresh",
-                ResponseService.generateSucessfulResponse(eventOrders)
-            );
+            .emit('orders:refresh', ResponseService.generateSucessfulResponse(eventOrders));
         PrompterSocket.namespace
             .to(roomAddress)
-            .emit(
-                "orders:refresh",
-                ResponseService.generateSucessfulResponse(eventOrders)
-            );
+            .emit('orders:refresh', ResponseService.generateSucessfulResponse(eventOrders));
     }
 
     public static async refreshOrder(id: string) {
@@ -58,24 +49,17 @@ export class SocketService {
                 SocketService.generateEventOrderRoom(
                     foundOrder.event._id.toString(),
                     foundOrder.realm._id.toString(),
-                    foundOrder._id.toString()
-                )
+                    foundOrder._id.toString(),
+                ),
             )
-            .emit(
-                "order:refresh",
-                ResponseService.generateSucessfulResponse(foundOrder)
-            );
+            .emit('order:refresh', ResponseService.generateSucessfulResponse(foundOrder));
     }
 
     public static generateEventRoom(eventId: string, realmId: string) {
         return `event/${eventId}/${realmId}`;
     }
 
-    public static generateEventOrderRoom(
-        eventId: string,
-        realmId: string,
-        orderId: string
-    ) {
+    public static generateEventOrderRoom(eventId: string, realmId: string, orderId: string) {
         return `event/${eventId}/${realmId}/${orderId}`;
     }
 }

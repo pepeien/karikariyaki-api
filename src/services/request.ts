@@ -1,12 +1,12 @@
 // Services
-import { StringService } from "@services";
+import { StringService } from '@services';
 
 export class RequestService {
     public static isValidQueryParam(value: any) {
         return (
             value !== null &&
             value !== undefined &&
-            typeof value == "string" &&
+            typeof value == 'string' &&
             value.trim().length > 0
         );
     }
@@ -18,13 +18,11 @@ export class RequestService {
     }
 
     public static queryParamToString(value: any) {
-        return RequestService.isValidQueryParam(value)
-            ? (value as string).trim()
-            : undefined;
+        return RequestService.isValidQueryParam(value) ? (value as string).trim() : undefined;
     }
 
     public static queryParamToStrings(value: any) {
-        if (!value || (typeof value !== "object" && !value.length)) {
+        if (!value || (typeof value !== 'object' && !value.length)) {
             return undefined;
         }
 

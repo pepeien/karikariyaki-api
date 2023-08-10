@@ -1,37 +1,37 @@
-import { PopulateOptions } from "mongoose";
+import { PopulateOptions } from 'mongoose';
 import {
     EventCreatableParams,
     EventEditableParams,
     EventQueryableParams,
     Operator,
     OperatorRole,
-} from "karikarihelper";
+} from 'karikarihelper';
 
 // Models
-import { EventModel, OperatorErrors, OrderModel } from "@models";
+import { EventModel, OperatorErrors, OrderModel } from '@models';
 
 // Services
-import { DatabaseService, DateService, StringService } from "@services";
-import { InHouseError } from "@types";
+import { DatabaseService, DateService, StringService } from '@services';
+import { InHouseError } from '@types';
 
 export class EventService {
-    public static visibleParameters = ["name", "date", "orders", "isOpen"];
+    public static visibleParameters = ['name', 'date', 'orders', 'isOpen'];
 
     private static _populateOptions = {
-        path: "orders",
-        select: ["status", "client"],
+        path: 'orders',
+        select: ['status', 'client'],
         populate: [
             {
-                path: "operator",
-                select: "displayName",
+                path: 'operator',
+                select: 'displayName',
             },
             {
-                path: "realm",
-                select: "name",
+                path: 'realm',
+                select: 'name',
             },
             {
-                path: "items",
-                select: "name",
+                path: 'items',
+                select: 'name',
             },
         ],
     } as PopulateOptions;
@@ -73,9 +73,9 @@ export class EventService {
                 .populate(EventService._populateOptions);
         }
 
-        return EventModel.find(
-            query.length === 0 ? null : { $and: query }
-        ).select(EventService.visibleParameters);
+        return EventModel.find(query.length === 0 ? null : { $and: query }).select(
+            EventService.visibleParameters,
+        );
     }
 
     public static async queryById(id: string) {
@@ -97,9 +97,7 @@ export class EventService {
         const newEntry = new EventModel();
 
         newEntry.name = values.name.trim();
-        newEntry.date = DateService.standarizeCurrentDate(
-            new Date(values.date)
-        );
+        newEntry.date = DateService.standarizeCurrentDate(new Date(values.date));
         newEntry.isOpen = DateService.isToday(newEntry.date);
 
         await newEntry.save();
@@ -109,11 +107,7 @@ export class EventService {
             .populate(EventService._populateOptions);
     }
 
-    public static async update(
-        operator: Operator,
-        id: string,
-        values: EventEditableParams
-    ) {
+    public static async update(operator: Operator, id: string, values: EventEditableParams) {
         if (EventService._canPerformModifications(operator)) {
             throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
         }
@@ -130,7 +124,7 @@ export class EventService {
                     isOpen: values.isOpen,
                 },
             },
-            { new: true, runValidators: true, setDefaultsOnInsert: false }
+            { new: true, runValidators: true, setDefaultsOnInsert: false },
         )
             .select(EventService.visibleParameters)
             .populate(EventService._populateOptions);
@@ -160,9 +154,7 @@ export class EventService {
 
     //TODO: Convert to Epoch
     private static async _fixEventsStatus() {
-        const foundEvents = await EventModel.find().select(
-            EventService.visibleParameters
-        );
+        const foundEvents = await EventModel.find().select(EventService.visibleParameters);
 
         for (const foundEvent of foundEvents) {
             if (foundEvent.isOpen === DateService.isToday(foundEvent.date)) {

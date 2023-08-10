@@ -1,67 +1,50 @@
-import { Router } from "express";
-import QRCode from "qrcode";
-import { Operator, OrderItemParam, QrCodeRseponse } from "karikarihelper";
+import { Router } from 'express';
+import QRCode from 'qrcode';
+import { Operator, OrderItemParam, QrCodeRseponse } from 'karikarihelper';
 
 // Types
-import { OrderErrors } from "@models";
-import { InHouseError } from "@types";
+import { OrderErrors } from '@models';
+import { InHouseError } from '@types';
 
 // Enums
-import { OrderStatus } from "@enums";
+import { OrderStatus } from '@enums';
 
 // Services
-import { OrderService, RequestService, ResponseService } from "@services";
+import { OrderService, RequestService, ResponseService } from '@services';
 
 const router = Router();
 
 export enum RedirectorErrors {
-    CLIENT_APP_ADDRESS_MISSING = "ERROR_CLIENT_APP_ADDRESS_MISSING",
+    CLIENT_APP_ADDRESS_MISSING = 'ERROR_CLIENT_APP_ADDRESS_MISSING',
 }
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const foundEventOrders = await OrderService.query(
-            res.locals.operator as Operator,
-            {
-                id: RequestService.queryParamToString(req.query.id),
-                eventId: RequestService.queryParamToString(req.query.eventId),
-                status: RequestService.queryParamToString(req.query.status),
-                operatorId: RequestService.queryParamToString(
-                    req.query.operatorId
-                ),
-                clientName: RequestService.queryParamToString(
-                    req.query.clientName
-                ),
-            }
-        );
+        const foundEventOrders = await OrderService.query(res.locals.operator as Operator, {
+            id: RequestService.queryParamToString(req.query.id),
+            eventId: RequestService.queryParamToString(req.query.eventId),
+            status: RequestService.queryParamToString(req.query.status),
+            operatorId: RequestService.queryParamToString(req.query.operatorId),
+            clientName: RequestService.queryParamToString(req.query.clientName),
+        });
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(foundEventOrders)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(foundEventOrders));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.get("/status", (req, res) => {
+router.get('/status', (req, res) => {
     try {
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(
-                Object.values(OrderStatus)
-            )
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(Object.values(OrderStatus)));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.get("/qr/:orderId", async (req, res) => {
+router.get('/qr/:orderId', async (req, res) => {
     try {
-        if (!process.env["CLIENT_APP_ADDRESS"]) {
+        if (!process.env['CLIENT_APP_ADDRESS']) {
             throw new InHouseError(RedirectorErrors.CLIENT_APP_ADDRESS_MISSING);
         }
 
@@ -77,11 +60,11 @@ router.get("/qr/:orderId", async (req, res) => {
             throw new InHouseError(OrderErrors.NOT_FOUND, 404);
         }
 
-        const redirectorURI = `${process.env["CLIENT_APP_ADDRESS"]}/order/${foundOrder.id}`;
+        const redirectorURI = `${process.env['CLIENT_APP_ADDRESS']}/order/${foundOrder.id}`;
 
         const result = await QRCode.toDataURL(redirectorURI, {
             color: {
-                light: "#0000",
+                light: '#0000',
             },
             width: 512,
         });
@@ -90,55 +73,42 @@ router.get("/qr/:orderId", async (req, res) => {
             ResponseService.generateSucessfulResponse({
                 base64: result,
                 redirector: redirectorURI,
-            } as QrCodeRseponse)
+            } as QrCodeRseponse),
         );
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const eventId = RequestService.queryParamToString(req.body.eventId);
-        const clientName = RequestService.queryParamToString(
-            req.body.clientName
-        );
+        const clientName = RequestService.queryParamToString(req.body.clientName);
         const items = req.body.items as OrderItemParam[];
 
         // Non obligatory params
-        const operatorId = RequestService.queryParamToString(
-            req.body.operatorId
-        );
+        const operatorId = RequestService.queryParamToString(req.body.operatorId);
         const status = RequestService.queryParamToString(req.body.status);
 
         if (!eventId || !clientName || !items || items.length === 0) {
             throw new InHouseError(OrderErrors.INVALID, 400);
         }
 
-        const response = await OrderService.save(
-            res.locals.operator as Operator,
-            {
-                eventId: eventId,
-                status: status,
-                operatorId: operatorId,
-                clientName: clientName,
-                items: items,
-            }
-        );
+        const response = await OrderService.save(res.locals.operator as Operator, {
+            eventId: eventId,
+            status: status,
+            operatorId: operatorId,
+            clientName: clientName,
+            items: items,
+        });
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch('/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const status = RequestService.queryParamToString(req.body.status);
@@ -147,56 +117,37 @@ router.patch("/:id", async (req, res) => {
             throw new InHouseError(OrderErrors.INVALID, 400);
         }
 
-        const response = await OrderService.update(
-            res.locals.operator as Operator,
-            id,
-            {
-                status: status,
-            }
-        );
+        const response = await OrderService.update(res.locals.operator as Operator, id, {
+            status: status,
+        });
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id;
 
         if (!id) {
-            res.status(400).json(
-                ResponseService.generateFailedResponse(OrderErrors.INVALID)
-            );
+            res.status(400).json(ResponseService.generateFailedResponse(OrderErrors.INVALID));
 
             return;
         }
 
-        const response = await OrderService.delete(
-            res.locals.operator as Operator,
-            id
-        );
+        const response = await OrderService.delete(res.locals.operator as Operator, id);
 
         if (!response) {
-            res.status(404).json(
-                ResponseService.generateFailedResponse(OrderErrors.NOT_FOUND)
-            );
+            res.status(404).json(ResponseService.generateFailedResponse(OrderErrors.NOT_FOUND));
 
             return;
         }
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 

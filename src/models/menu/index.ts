@@ -1,22 +1,18 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 // Types
-import { Statics } from "@types";
+import { Statics } from '@types';
 
 // Validators
-import {
-    validateMenuIcon,
-    validateMenuRoute,
-    validateMenuTitle,
-} from "./validators";
+import { validateMenuIcon, validateMenuRoute, validateMenuTitle } from './validators';
 
 export enum MenuErrors {
-    INVALID = "ERROR_MENU_INVALID",
-    ICON_INVALID = "ERROR_MENU_ICON_INVALID",
-    NOT_FOUND = "ERROR_MENU_NOT_FOUND",
-    ROUTE_DUPLICATED = "ERROR_MENU_ROUTE_DUPLICATED",
-    TITLE_DUPLICATED = "ERROR_MENU_TITLE_DUPLICATED",
-    TITLE_REQUIRED = "ERROR_MENU_TITLE_REQUIRED",
+    INVALID = 'ERROR_MENU_INVALID',
+    ICON_INVALID = 'ERROR_MENU_ICON_INVALID',
+    NOT_FOUND = 'ERROR_MENU_NOT_FOUND',
+    ROUTE_DUPLICATED = 'ERROR_MENU_ROUTE_DUPLICATED',
+    TITLE_DUPLICATED = 'ERROR_MENU_TITLE_DUPLICATED',
+    TITLE_REQUIRED = 'ERROR_MENU_TITLE_REQUIRED',
 }
 
 const MenuSchema = new Schema({
@@ -31,7 +27,7 @@ const MenuSchema = new Schema({
     },
     roles: {
         type: Array<string>,
-        default: [""],
+        default: [''],
     },
     route: {
         type: String,

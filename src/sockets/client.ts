@@ -1,13 +1,13 @@
-import { io } from "../setup";
+import { io } from '../setup';
 
 // Routes
-import { joinOrder } from "./routes";
+import { joinOrder } from './routes';
 
 export class ClientSocket {
-    public static namespace = io.of("karikariyaki/ws/client");
+    public static namespace = io.of('karikariyaki/ws/client');
 
     public static setup() {
-        ClientSocket.namespace.on("connection", (socket) => {
+        ClientSocket.namespace.on('connection', (socket) => {
             /**
              * Orders
              */

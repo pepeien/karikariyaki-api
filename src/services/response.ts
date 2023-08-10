@@ -1,5 +1,5 @@
 // Types
-import { ResponseWrapper } from "@types";
+import { ResponseWrapper } from '@types';
 
 export class ResponseService {
     public static generateSucessfulResponse<T>(result?: T): ResponseWrapper<T> {
@@ -9,11 +9,8 @@ export class ResponseService {
         };
     }
 
-    public static generateFailedResponse(
-        description: string
-    ): ResponseWrapper<void> {
-        const wasAppendedByMongoose =
-            description.includes("validation failed:");
+    public static generateFailedResponse(description: string): ResponseWrapper<void> {
+        const wasAppendedByMongoose = description.includes('validation failed:');
 
         if (wasAppendedByMongoose === false) {
             return {
@@ -29,21 +26,19 @@ export class ResponseService {
     }
 
     private static _parseDescription(description: string): string[] {
-        const inHouseErrorDescriptionPrefix = "ERROR";
+        const inHouseErrorDescriptionPrefix = 'ERROR';
 
         const parsedDescription: string[] = [];
 
-        const splittedDescription = description.split(":");
+        const splittedDescription = description.split(':');
 
         for (const descriptionBlock of splittedDescription) {
             const trimmedDescriptionBlock = descriptionBlock.trim();
-            const splittedDescriptionBlock = trimmedDescriptionBlock.split(",");
+            const splittedDescriptionBlock = trimmedDescriptionBlock.split(',');
 
             if (
                 splittedDescriptionBlock.length === 1 &&
-                trimmedDescriptionBlock.startsWith(
-                    inHouseErrorDescriptionPrefix
-                ) === false
+                trimmedDescriptionBlock.startsWith(inHouseErrorDescriptionPrefix) === false
             ) {
                 continue;
             }
@@ -52,9 +47,7 @@ export class ResponseService {
                 const trimmedDeepDescriptionBlock = deepDescriptionBlock.trim();
 
                 if (
-                    trimmedDeepDescriptionBlock.startsWith(
-                        inHouseErrorDescriptionPrefix
-                    ) === false
+                    trimmedDeepDescriptionBlock.startsWith(inHouseErrorDescriptionPrefix) === false
                 ) {
                     continue;
                 }

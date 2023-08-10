@@ -1,27 +1,27 @@
-import { PopulateOptions } from "mongoose";
+import { PopulateOptions } from 'mongoose';
 import {
     Operator,
     OperatorCreatableParams,
     OperatorEditableParams,
     OperatorQueryableParams,
     OperatorRole,
-} from "karikarihelper";
+} from 'karikarihelper';
 
 // Types
-import { OperatorErrors, OperatorModel } from "@models";
-import { InHouseError } from "@types";
+import { OperatorErrors, OperatorModel } from '@models';
+import { InHouseError } from '@types';
 
 // Services
-import { DatabaseService, RealmService, StringService } from "@services";
+import { DatabaseService, RealmService, StringService } from '@services';
 
 let adminOperator: Operator | null = null;
 
 export class OperatorService {
-    public static visibleParameters = ["displayName", "role", "realm", "photo"];
+    public static visibleParameters = ['displayName', 'role', 'realm', 'photo'];
 
     private static _populateOptions = {
-        path: "realm",
-        select: "name",
+        path: 'realm',
+        select: 'name',
     } as PopulateOptions;
     private static _validRoles = Object.values(OperatorRole);
 
@@ -31,9 +31,7 @@ export class OperatorService {
                 return OperatorService._validRoles;
 
             case OperatorRole.MANAGER:
-                return OperatorService._validRoles.filter(
-                    (role) => role === OperatorRole.WORKER
-                );
+                return OperatorService._validRoles.filter((role) => role === OperatorRole.WORKER);
 
             case OperatorRole.WORKER:
                 return [];
@@ -43,10 +41,7 @@ export class OperatorService {
         }
     }
 
-    public static async query(
-        operator: Operator,
-        values: OperatorQueryableParams
-    ) {
+    public static async query(operator: Operator, values: OperatorQueryableParams) {
         await DatabaseService.getConnection();
 
         const query = [];
@@ -59,9 +54,7 @@ export class OperatorService {
 
         if (values.displayName) {
             query.push({
-                displayName: DatabaseService.generateBroadQuery(
-                    values.displayName
-                ),
+                displayName: DatabaseService.generateBroadQuery(values.displayName),
             });
         }
 
@@ -118,13 +111,10 @@ export class OperatorService {
             .populate(OperatorService._populateOptions);
     }
 
-    public static async save(
-        operator: Operator,
-        values: OperatorCreatableParams
-    ) {
-        const isRoleInvalid = !OperatorService.getAvailableRolesByRole(
-            operator.role
-        ).find((role) => role === values.role.trim());
+    public static async save(operator: Operator, values: OperatorCreatableParams) {
+        const isRoleInvalid = !OperatorService.getAvailableRolesByRole(operator.role).find(
+            (role) => role === values.role.trim(),
+        );
 
         if (isRoleInvalid) {
             throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
@@ -139,15 +129,14 @@ export class OperatorService {
         newEntry.realm = StringService.toObjectId(
             operator.role === OperatorRole.ADMIN && values.realmId
                 ? values.realmId
-                : operator.realm._id
+                : operator.realm._id,
         );
         newEntry.role = values.role.trim();
         newEntry.photo = values.photo;
 
         const adminRealm = await RealmService.getAdminRealm();
 
-        const isAdminRealm =
-            values.realmId && values.realmId === adminRealm._id.toString();
+        const isAdminRealm = values.realmId && values.realmId === adminRealm._id.toString();
         const isAdminRole = values.role && values.role === OperatorRole.ADMIN;
 
         if (isAdminRealm || isAdminRole) {
@@ -161,15 +150,11 @@ export class OperatorService {
             .populate(OperatorService._populateOptions);
     }
 
-    public static async update(
-        operator: Operator,
-        id: string,
-        values: OperatorEditableParams
-    ) {
+    public static async update(operator: Operator, id: string, values: OperatorEditableParams) {
         const isRoleInvalid =
             values.role &&
             !OperatorService.getAvailableRolesByRole(operator.role).find(
-                (role) => role === values.role.trim()
+                (role) => role === values.role.trim(),
             );
 
         if (isRoleInvalid) {
@@ -181,10 +166,7 @@ export class OperatorService {
         if (operator.role !== OperatorRole.ADMIN) {
             const foundOperator = await OperatorService.queryById(id);
 
-            if (
-                operator.realm._id.toString() !==
-                foundOperator.realm._id.toString()
-            ) {
+            if (operator.realm._id.toString() !== foundOperator.realm._id.toString()) {
                 throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
             }
         }
@@ -202,7 +184,7 @@ export class OperatorService {
                     photo: values.photo,
                 },
             },
-            { runValidators: true }
+            { runValidators: true },
         )
             .select(OperatorService.visibleParameters)
             .populate(OperatorService._populateOptions);
@@ -214,10 +196,7 @@ export class OperatorService {
         if (operator.role !== OperatorRole.ADMIN) {
             const foundOperator = await OperatorService.queryById(id);
 
-            if (
-                operator.realm._id.toString() !==
-                foundOperator.realm._id.toString()
-            ) {
+            if (operator.realm._id.toString() !== foundOperator.realm._id.toString()) {
                 throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
             }
         }

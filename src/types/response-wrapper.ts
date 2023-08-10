@@ -4,6 +4,6 @@ export interface InHouseResponse {
     description?: string[];
 }
 
-export interface ResponseWrapper<T> extends Omit<InHouseResponse, "code"> {
+export interface ResponseWrapper<T> extends Omit<InHouseResponse, 'code'> {
     result?: T;
 }

@@ -1,22 +1,18 @@
-import { Router } from "express";
+import { Router } from 'express';
 
 // Types
-import { default as Endpoints } from "./enpoints";
+import { default as Endpoints } from './enpoints';
 
 // Services
-import { ResponseService } from "@services";
+import { ResponseService } from '@services';
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(Endpoints)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(Endpoints));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 

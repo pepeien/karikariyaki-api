@@ -1,11 +1,11 @@
-import { Schema, model } from "mongoose";
-import { Ingredient } from "karikarihelper";
+import { Schema, model } from 'mongoose';
+import { Ingredient } from 'karikarihelper';
 
 // Types
-import { Statics } from "@types";
+import { Statics } from '@types';
 
 // Enums
-import { OrderStatus } from "@enums";
+import { OrderStatus } from '@enums';
 
 // Validators
 import {
@@ -13,23 +13,23 @@ import {
     validateOrderClient,
     validateOrderEvent,
     validateOrderOperator,
-} from "./validators";
+} from './validators';
 
 export enum OrderErrors {
-    CLIENT_NAME_GREATER_THAN_MAX_LENGTH = "ERROR_ORDER_CLIENT_NAME_GREATER_THAN_MAX_LENGTH",
-    CLIENT_NAME_LESS_THAN_MIN_LENGTH = "ERROR_ORDER_CLIENT_NAME_LESS_THAN_MIN_LENGTH",
-    CLIENT_NAME_REQUIRED = "ERROR_ORDER_CLIENT_NAME_REQUIRED",
-    EVENT_INVALID = "ERROR_ORDER_EVENT_INVALID",
-    EVENT_REQUIRED = "ERROR_ORDER_EVENT_REQUIRED",
-    INVALID = "ERROR_ORDER_INVALID",
-    ITEMS_INVALID = "ERROR_ORDER_ITEMS_INVALID",
-    ITEMS_REQUIRED = "ERROR_ORDER_ITEMS_REQUIRED",
-    NOT_FOUND = "ERROR_ORDER_NOT_FOUND",
-    OPERATOR_INVALID = "ERROR_ORDER_OPERATOR_INVALID",
-    OPERATOR_REQUIRED = "ERROR_ORDER_OPERATOR_REQUIRED",
-    PICKED_UP = "ERROR_ORDER_PICKED_UP",
-    REALM_INVALID = "ERROR_OPERATOR_REALM_INVALID",
-    REALM_REQUIRED = "ERROR_OPERATOR_REALM_REQUIRED",
+    CLIENT_NAME_GREATER_THAN_MAX_LENGTH = 'ERROR_ORDER_CLIENT_NAME_GREATER_THAN_MAX_LENGTH',
+    CLIENT_NAME_LESS_THAN_MIN_LENGTH = 'ERROR_ORDER_CLIENT_NAME_LESS_THAN_MIN_LENGTH',
+    CLIENT_NAME_REQUIRED = 'ERROR_ORDER_CLIENT_NAME_REQUIRED',
+    EVENT_INVALID = 'ERROR_ORDER_EVENT_INVALID',
+    EVENT_REQUIRED = 'ERROR_ORDER_EVENT_REQUIRED',
+    INVALID = 'ERROR_ORDER_INVALID',
+    ITEMS_INVALID = 'ERROR_ORDER_ITEMS_INVALID',
+    ITEMS_REQUIRED = 'ERROR_ORDER_ITEMS_REQUIRED',
+    NOT_FOUND = 'ERROR_ORDER_NOT_FOUND',
+    OPERATOR_INVALID = 'ERROR_ORDER_OPERATOR_INVALID',
+    OPERATOR_REQUIRED = 'ERROR_ORDER_OPERATOR_REQUIRED',
+    PICKED_UP = 'ERROR_ORDER_PICKED_UP',
+    REALM_INVALID = 'ERROR_OPERATOR_REALM_INVALID',
+    REALM_REQUIRED = 'ERROR_OPERATOR_REALM_REQUIRED',
 }
 
 const OrderSchema = new Schema(
@@ -75,7 +75,7 @@ const OrderSchema = new Schema(
             default: [],
         },
     },
-    { timestamps: true }
+    { timestamps: true },
 );
 
 const OrderModel = model(Statics.ORDER_COLLECTION_NAME, OrderSchema);

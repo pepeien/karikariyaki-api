@@ -1,7 +1,7 @@
-import cookie from "cookie";
+import cookie from 'cookie';
 
 // Socket
-import { io } from "../setup";
+import { io } from '../setup';
 
 // Routes
 import {
@@ -13,16 +13,16 @@ import {
     joinEvents,
     leaveEvent,
     leaveEvents,
-} from "./routes";
+} from './routes';
 
 // Services
-import { JWTService, OperatorService } from "@services";
+import { JWTService, OperatorService } from '@services';
 
 export class RejiSocket {
-    public static namespace = io.of("karikariyaki/ws/reji");
+    public static namespace = io.of('karikariyaki/ws/reji');
 
     public static setup() {
-        RejiSocket.namespace.on("connection", async (socket) => {
+        RejiSocket.namespace.on('connection', async (socket) => {
             const rawCookies = socket.handshake.headers.cookie;
 
             if (!rawCookies) {
@@ -31,21 +31,20 @@ export class RejiSocket {
 
             const parsedCookies = cookie.parse(rawCookies);
 
-            const accessToken = parsedCookies[process.env["COOKIE_NAME"]];
+            const accessToken = parsedCookies[process.env['COOKIE_NAME']];
 
             if (!accessToken) {
                 return;
             }
 
-            const decodedAccessToken =
-                JWTService.decodeAccessToken(accessToken);
+            const decodedAccessToken = JWTService.decodeAccessToken(accessToken);
 
             if (!decodedAccessToken || !decodedAccessToken.userName) {
                 return;
             }
 
             const loggedOperator = await OperatorService.queryByUserName(
-                decodedAccessToken.userName
+                decodedAccessToken.userName,
             );
 
             if (!loggedOperator) {

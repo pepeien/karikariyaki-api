@@ -1,19 +1,19 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 // Types
-import { Statics } from "@types";
+import { Statics } from '@types';
 
 // Validators
-import { validateEventOrders } from "./validators";
+import { validateEventOrders } from './validators';
 
 export enum EventErrors {
-    DATE_REQUIRED = "ERROR_EVENT_DATE_REQUIRED",
-    INVALID = "ERROR_EVENT_INVALID",
-    NOT_ACTIVE = "ERROR_EVENT_NOT_ACTIVE",
-    NOT_FOUND = "ERROR_EVENT_NOT_FOUND",
-    NAME_REQUIRED = "ERROR_EVENT_NAME_REQUIRED",
-    ORDER_INVALID = "ERROR_EVENT_ORDER_INVALID",
-    ORDER_DUPLICATED = "ERROR_EVENT_ORDER_DUPLICATED",
+    DATE_REQUIRED = 'ERROR_EVENT_DATE_REQUIRED',
+    INVALID = 'ERROR_EVENT_INVALID',
+    NOT_ACTIVE = 'ERROR_EVENT_NOT_ACTIVE',
+    NOT_FOUND = 'ERROR_EVENT_NOT_FOUND',
+    NAME_REQUIRED = 'ERROR_EVENT_NAME_REQUIRED',
+    ORDER_INVALID = 'ERROR_EVENT_ORDER_INVALID',
+    ORDER_DUPLICATED = 'ERROR_EVENT_ORDER_DUPLICATED',
 }
 
 const EventSchema = new Schema({
@@ -27,9 +27,7 @@ const EventSchema = new Schema({
         required: [true, EventErrors.DATE_REQUIRED],
     },
     orders: {
-        type: [
-            { type: Schema.Types.ObjectId, ref: Statics.ORDER_COLLECTION_NAME },
-        ],
+        type: [{ type: Schema.Types.ObjectId, ref: Statics.ORDER_COLLECTION_NAME }],
         default: [],
         validate: validateEventOrders,
     },

@@ -1,40 +1,33 @@
-import { PopulateOptions } from "mongoose";
+import { PopulateOptions } from 'mongoose';
 import {
     MenuCreatableParams,
     MenuEditableParams,
     MenuQueryableParams,
     Operator,
     OperatorRole,
-} from "karikarihelper";
+} from 'karikarihelper';
 
 // Types
-import { MenuModel, OperatorErrors } from "@models";
-import { InHouseError } from "@types";
+import { MenuModel, OperatorErrors } from '@models';
+import { InHouseError } from '@types';
 
 // Services
-import { DatabaseService, StringService } from "@services";
+import { DatabaseService, StringService } from '@services';
 
 export class MenuService {
-    public static visibleParameters = [
-        "title",
-        "icon",
-        "roles",
-        "route",
-        "parent",
-        "children",
-    ];
+    public static visibleParameters = ['title', 'icon', 'roles', 'route', 'parent', 'children'];
 
     private static _populateOptions = [
         {
-            path: "parent",
-            select: "title",
+            path: 'parent',
+            select: 'title',
         },
         {
-            path: "children",
-            select: ["title", "icon", "roles", "route", "children"],
+            path: 'children',
+            select: ['title', 'icon', 'roles', 'route', 'children'],
             populate: {
-                path: "children",
-                select: ["title", "icon", "route"],
+                path: 'children',
+                select: ['title', 'icon', 'route'],
             },
         },
     ] as PopulateOptions[];
@@ -70,8 +63,8 @@ export class MenuService {
             roles: {
                 $in:
                     operator.role === OperatorRole.ADMIN
-                        ? ["", ...Object.values(OperatorRole)]
-                        : ["", operator.role],
+                        ? ['', ...Object.values(OperatorRole)]
+                        : ['', operator.role],
             },
         });
 
@@ -80,10 +73,10 @@ export class MenuService {
                 ? null
                 : {
                       $and: query,
-                  }
+                  },
         )
             .select(MenuService.visibleParameters)
-            .sort("title")
+            .sort('title')
             .populate(MenuService._getPopulateOptions(operator));
     }
 
@@ -100,8 +93,8 @@ export class MenuService {
             roles: {
                 $in:
                     operator.role === OperatorRole.ADMIN
-                        ? ["", ...Object.values(OperatorRole)]
-                        : ["", operator.role],
+                        ? ['', ...Object.values(OperatorRole)]
+                        : ['', operator.role],
             },
         });
 
@@ -109,7 +102,7 @@ export class MenuService {
             $and: query,
         })
             .select(MenuService.visibleParameters)
-            .sort("title")
+            .sort('title')
             .populate(MenuService._getPopulateOptions(operator));
     }
 
@@ -124,9 +117,7 @@ export class MenuService {
 
         newEntry.title = values.title?.trim();
         newEntry.icon = values.icon?.trim();
-        newEntry.route = StringService.removeLeadingAndTrailingSlashes(
-            values.route
-        );
+        newEntry.route = StringService.removeLeadingAndTrailingSlashes(values.route);
         newEntry.parent = StringService.toObjectId(values.parentId);
 
         if (newEntry.parent) {
@@ -138,7 +129,7 @@ export class MenuService {
                         children: newEntry._id,
                     },
                 },
-                { runValidators: true }
+                { runValidators: true },
             );
         }
 
@@ -149,11 +140,7 @@ export class MenuService {
             .populate(MenuService._populateOptions);
     }
 
-    public static async update(
-        operator: Operator,
-        id: string,
-        values: MenuEditableParams
-    ) {
+    public static async update(operator: Operator, id: string, values: MenuEditableParams) {
         if (MenuService._canPerformModifications(operator)) {
             throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
         }
@@ -162,9 +149,7 @@ export class MenuService {
 
         values.title = values.title?.trim();
         values.icon = values.icon?.trim();
-        values.route = StringService.removeLeadingAndTrailingSlashes(
-            values.route
-        );
+        values.route = StringService.removeLeadingAndTrailingSlashes(values.route);
 
         const menuId = StringService.toObjectId(id);
 
@@ -176,13 +161,10 @@ export class MenuService {
                 $set: {
                     title: values.title ?? undefined,
                     icon: values.icon ?? undefined,
-                    route:
-                        currentMenu.children.length > 0
-                            ? undefined
-                            : values.route ?? undefined,
+                    route: currentMenu.children.length > 0 ? undefined : values.route ?? undefined,
                 },
             },
-            { runValidators: true }
+            { runValidators: true },
         )
             .select(MenuService.visibleParameters)
             .populate(MenuService._populateOptions);
@@ -209,7 +191,7 @@ export class MenuService {
                 $pull: {
                     children: menuId,
                 },
-            }
+            },
         );
 
         return MenuModel.findByIdAndDelete(menuId)
@@ -220,23 +202,23 @@ export class MenuService {
     private static _getPopulateOptions(operator: Operator) {
         return [
             {
-                path: "parent",
-                select: "title",
+                path: 'parent',
+                select: 'title',
             },
             {
-                path: "children",
-                select: ["title", "icon", "roles", "route", "children"],
+                path: 'children',
+                select: ['title', 'icon', 'roles', 'route', 'children'],
                 match: {
                     roles: {
-                        $in: ["", operator.role],
+                        $in: ['', operator.role],
                     },
                 },
                 populate: {
-                    path: "children",
-                    select: ["title", "icon", "roles", "route"],
+                    path: 'children',
+                    select: ['title', 'icon', 'roles', 'route'],
                     match: {
                         roles: {
-                            $in: ["", operator.role],
+                            $in: ['', operator.role],
                         },
                     },
                 },

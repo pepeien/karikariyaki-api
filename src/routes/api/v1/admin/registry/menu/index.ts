@@ -1,57 +1,44 @@
-import { Router } from "express";
-import { Operator } from "karikarihelper";
+import { Router } from 'express';
+import { Operator } from 'karikarihelper';
 
 //Types
-import { MenuErrors } from "@models";
-import { InHouseError } from "@types";
+import { MenuErrors } from '@models';
+import { InHouseError } from '@types';
 
 // Services
-import { MenuService, RequestService, ResponseService } from "@services";
+import { MenuService, RequestService, ResponseService } from '@services';
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const id = RequestService.queryParamToString(req.query.id);
         const title = RequestService.queryParamToString(req.query.title);
         const parentId = RequestService.queryParamToString(req.query.parentId);
 
-        const response = await MenuService.query(
-            res.locals.operator as Operator,
-            {
-                id: id,
-                title: title,
-                parentId: parentId,
-            }
-        );
+        const response = await MenuService.query(res.locals.operator as Operator, {
+            id: id,
+            title: title,
+            parentId: parentId,
+        });
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.get("/self", async (req, res) => {
+router.get('/self', async (req, res) => {
     try {
-        const response = await MenuService.querySelf(
-            res.locals.operator as Operator
-        );
+        const response = await MenuService.querySelf(res.locals.operator as Operator);
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const title = RequestService.queryParamToString(req.body.title);
         const icon = RequestService.queryParamToString(req.body.icon);
@@ -62,27 +49,20 @@ router.post("/", async (req, res) => {
             throw new InHouseError(MenuErrors.INVALID, 400);
         }
 
-        const response = await MenuService.save(
-            res.locals.operator as Operator,
-            {
-                title: title,
-                icon: icon,
-                route: route,
-                parentId: parentId,
-            }
-        );
+        const response = await MenuService.save(res.locals.operator as Operator, {
+            title: title,
+            icon: icon,
+            route: route,
+            parentId: parentId,
+        });
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch('/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const icon = RequestService.queryParamToString(req.body.icon);
@@ -93,27 +73,19 @@ router.patch("/:id", async (req, res) => {
             throw new InHouseError(MenuErrors.INVALID, 400);
         }
 
-        const response = await MenuService.update(
-            res.locals.operator as Operator,
-            id,
-            {
-                icon: icon,
-                title: title,
-                route: route,
-            }
-        );
+        const response = await MenuService.update(res.locals.operator as Operator, id, {
+            icon: icon,
+            title: title,
+            route: route,
+        });
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id;
 
@@ -121,26 +93,17 @@ router.delete("/:id", async (req, res) => {
             throw new InHouseError(MenuErrors.INVALID, 400);
         }
 
-        const response = await MenuService.delete(
-            res.locals.operator as Operator,
-            id
-        );
+        const response = await MenuService.delete(res.locals.operator as Operator, id);
 
         if (!response) {
-            res.status(404).json(
-                ResponseService.generateFailedResponse(MenuErrors.NOT_FOUND)
-            );
+            res.status(404).json(ResponseService.generateFailedResponse(MenuErrors.NOT_FOUND));
 
             return;
         }
 
-        res.status(200).json(
-            ResponseService.generateSucessfulResponse(response)
-        );
+        res.status(200).json(ResponseService.generateSucessfulResponse(response));
     } catch (error) {
-        res.status(error.code ?? 500).json(
-            ResponseService.generateFailedResponse(error.message)
-        );
+        res.status(error.code ?? 500).json(ResponseService.generateFailedResponse(error.message));
     }
 });
 

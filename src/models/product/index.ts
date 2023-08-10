@@ -1,22 +1,22 @@
-import { Schema, model } from "mongoose";
-import { Ingredient } from "karikarihelper";
+import { Schema, model } from 'mongoose';
+import { Ingredient } from 'karikarihelper';
 
 // Types
-import { Statics } from "@types";
+import { Statics } from '@types';
 
 // Validators
-import { validateProductName, validateProductRealm } from "./validators";
+import { validateProductName, validateProductRealm } from './validators';
 
 export enum ProductErrors {
-    INVALID = "ERROR_PRODUCT_INVALID",
-    NAME_DUPLICATED = "ERROR_PRODUCT_NAME_DUPLICATED",
-    NAME_GREATER_THAN_MAX_LENGTH = "ERROR_PRODUCT_NAME_GREATER_THAN_MAX_LENGTH",
-    NAME_LESS_THAN_MIN_LENGTH = "ERROR_PRODUCT_NAME_LESS_THAN_MIN_LENGTH",
-    NAME_REQUIRED = "ERROR_PRODUCT_NAME_REQUIRED",
-    NOT_FOUND = "ERROR_PRODUCT_NOT_FOUND",
-    REALM_INVALID = "ERROR_PRODUCT_REALM_INVALID",
-    REALM_REQUIRED = "ERROR_PRODUCT_REALM_REQUIRED",
-    PARENT_INVALID = "ERROR_PRODUCT_PARENT_INVALID",
+    INVALID = 'ERROR_PRODUCT_INVALID',
+    NAME_DUPLICATED = 'ERROR_PRODUCT_NAME_DUPLICATED',
+    NAME_GREATER_THAN_MAX_LENGTH = 'ERROR_PRODUCT_NAME_GREATER_THAN_MAX_LENGTH',
+    NAME_LESS_THAN_MIN_LENGTH = 'ERROR_PRODUCT_NAME_LESS_THAN_MIN_LENGTH',
+    NAME_REQUIRED = 'ERROR_PRODUCT_NAME_REQUIRED',
+    NOT_FOUND = 'ERROR_PRODUCT_NOT_FOUND',
+    REALM_INVALID = 'ERROR_PRODUCT_REALM_INVALID',
+    REALM_REQUIRED = 'ERROR_PRODUCT_REALM_REQUIRED',
+    PARENT_INVALID = 'ERROR_PRODUCT_PARENT_INVALID',
 }
 
 const ProductSchema = new Schema({

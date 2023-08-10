@@ -1,24 +1,24 @@
-import { JwtPayload, sign, verify } from "jsonwebtoken";
-import { CookieOptions, NextFunction, Request, Response } from "express";
-import randToken from "rand-token";
+import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { CookieOptions, NextFunction, Request, Response } from 'express';
+import randToken from 'rand-token';
 
 // Types
-import { InHouseError, Statics } from "@types";
+import { InHouseError, Statics } from '@types';
 
 // Services
-import { OperatorService, RequestService, ResponseService } from "@services";
+import { OperatorService, RequestService, ResponseService } from '@services';
 
 // Models
-import { OperatorErrors } from "@models";
+import { OperatorErrors } from '@models';
 
 export enum JWTErrors {
-    SETTINGS_INVALID = "ERROR_JWT_SETTINGS_INVALID",
-    ACCESS_TOKEN_SETTINGS_INVALID = "ERROR_JWT_ACCESS_TOKEN_SETTINGS_INVALID",
-    ACCESS_TOKEN_NOT_FOUND = "ERROR_JWT_ACCESS_TOKEN_NOT_FOUND",
-    ACCESS_TOKEN_INVALID = "ERROR_JWT_ACCESS_TOKEN_INVALID",
-    REFRESH_TOKEN_SETTINGS_INVALID = "ERROR_JWT_REFRESH_TOKEN_SETTINGS_INVALID",
-    REFRESH_TOKEN_NOT_FOUND = "ERROR_JWT_REFRESH_TOKEN_NOT_FOUND",
-    REFRESH_TOKEN_INVALID = "ERROR_JWT_REFRESH_TOKEN_INVALID",
+    SETTINGS_INVALID = 'ERROR_JWT_SETTINGS_INVALID',
+    ACCESS_TOKEN_SETTINGS_INVALID = 'ERROR_JWT_ACCESS_TOKEN_SETTINGS_INVALID',
+    ACCESS_TOKEN_NOT_FOUND = 'ERROR_JWT_ACCESS_TOKEN_NOT_FOUND',
+    ACCESS_TOKEN_INVALID = 'ERROR_JWT_ACCESS_TOKEN_INVALID',
+    REFRESH_TOKEN_SETTINGS_INVALID = 'ERROR_JWT_REFRESH_TOKEN_SETTINGS_INVALID',
+    REFRESH_TOKEN_NOT_FOUND = 'ERROR_JWT_REFRESH_TOKEN_NOT_FOUND',
+    REFRESH_TOKEN_INVALID = 'ERROR_JWT_REFRESH_TOKEN_INVALID',
 }
 
 export class JWTService {
@@ -43,24 +43,19 @@ export class JWTService {
 
         return sign(
             {
-                code: randToken.generate(
-                    parseInt(process.env.SECRET_REFRESH_SIZE)
-                ),
+                code: randToken.generate(parseInt(process.env.SECRET_REFRESH_SIZE)),
                 userName: userName.trim(),
             },
             process.env.SECRET_REFRESH,
             {
                 expiresIn: JWTService.getRefreshExpirationTimeInMs(),
-            }
+            },
         );
     }
 
     public static decodeAccessToken(accessToken: string): JwtPayload {
         if (!process.env.SECRET) {
-            throw new InHouseError(
-                JWTErrors.ACCESS_TOKEN_SETTINGS_INVALID,
-                503
-            );
+            throw new InHouseError(JWTErrors.ACCESS_TOKEN_SETTINGS_INVALID, 503);
         }
 
         if (!accessToken) {
@@ -69,7 +64,7 @@ export class JWTService {
 
         const result = verify(accessToken, process.env.SECRET);
 
-        if (typeof result === "string") {
+        if (typeof result === 'string') {
             throw new InHouseError(JWTErrors.ACCESS_TOKEN_INVALID, 403);
         }
 
@@ -78,10 +73,7 @@ export class JWTService {
 
     public static decodeRefreshToken(refreshToken: string): JwtPayload {
         if (!process.env.SECRET_REFRESH) {
-            throw new InHouseError(
-                JWTErrors.REFRESH_TOKEN_SETTINGS_INVALID,
-                503
-            );
+            throw new InHouseError(JWTErrors.REFRESH_TOKEN_SETTINGS_INVALID, 503);
         }
 
         if (!refreshToken) {
@@ -90,7 +82,7 @@ export class JWTService {
 
         const result = verify(refreshToken, process.env.SECRET_REFRESH);
 
-        if (typeof result === "string") {
+        if (typeof result === 'string') {
             throw new InHouseError(JWTErrors.REFRESH_TOKEN_INVALID, 403);
         }
 
@@ -101,26 +93,22 @@ export class JWTService {
         res.cookie(
             process.env.COOKIE_NAME,
             JWTService.encodeAccessToken(userName),
-            JWTService.getDefaultCookieOptions()
+            JWTService.getDefaultCookieOptions(),
         );
 
         res.cookie(
             process.env.COOKIE_REFRESH_NAME,
             JWTService.encodeRefreshToken(userName),
-            JWTService.getDefaultCookieOptions()
+            JWTService.getDefaultCookieOptions(),
         );
     }
 
-    public static async refreshCookies(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
+    public static async refreshCookies(req: Request, res: Response, next: NextFunction) {
         try {
             JWTService.handleShowcasing(req);
         } catch (error) {
             res.status(error.code ?? 500).json(
-                ResponseService.generateFailedResponse(error.message)
+                ResponseService.generateFailedResponse(error.message),
             );
 
             return;
@@ -128,17 +116,17 @@ export class JWTService {
 
         const accessToken = req.cookies[process.env.COOKIE_NAME];
 
-        let userName = "";
+        let userName = '';
         let hasAccessTokenExpired = false;
 
         try {
             userName = JWTService.decodeAccessToken(accessToken).userName;
         } catch (error) {
-            if (error.name !== "TokenExpiredError") {
+            if (error.name !== 'TokenExpiredError') {
                 JWTService.clearCookies(req, res);
 
                 res.status(error.code ?? 500).json(
-                    ResponseService.generateFailedResponse(error.message)
+                    ResponseService.generateFailedResponse(error.message),
                 );
 
                 return;
@@ -155,27 +143,21 @@ export class JWTService {
             try {
                 userName = JWTService.decodeRefreshToken(refreshToken).userName;
 
-                const refreshedAccessToken =
-                    JWTService.encodeAccessToken(userName);
-                const refreshedRefreshToken =
-                    JWTService.encodeRefreshToken(userName);
+                const refreshedAccessToken = JWTService.encodeAccessToken(userName);
+                const refreshedRefreshToken = JWTService.encodeRefreshToken(userName);
 
-                res.cookie(
-                    process.env.COOKIE_NAME,
-                    refreshedAccessToken,
-                    defaultCookieOptions
-                );
+                res.cookie(process.env.COOKIE_NAME, refreshedAccessToken, defaultCookieOptions);
 
                 res.cookie(
                     process.env.COOKIE_REFRESH_NAME,
                     refreshedRefreshToken,
-                    defaultCookieOptions
+                    defaultCookieOptions,
                 );
             } catch (error) {
                 JWTService.clearCookies(req, res);
 
                 res.status(error.code ?? 500).json(
-                    ResponseService.generateFailedResponse(error.message)
+                    ResponseService.generateFailedResponse(error.message),
                 );
 
                 return;
@@ -183,15 +165,11 @@ export class JWTService {
         }
 
         try {
-            const foundOperator = await OperatorService.queryByUserName(
-                userName
-            );
+            const foundOperator = await OperatorService.queryByUserName(userName);
 
             if (!foundOperator) {
                 res.status(404).json(
-                    ResponseService.generateFailedResponse(
-                        OperatorErrors.NOT_FOUND
-                    )
+                    ResponseService.generateFailedResponse(OperatorErrors.NOT_FOUND),
                 );
 
                 return;
@@ -203,9 +181,7 @@ export class JWTService {
         } catch (error) {
             JWTService.clearCookies(req, res);
 
-            res.status(500).json(
-                ResponseService.generateFailedResponse(error.message)
-            );
+            res.status(500).json(ResponseService.generateFailedResponse(error.message));
         }
     }
 
@@ -256,24 +232,18 @@ export class JWTService {
     public static getDefaultCookieOptions(): CookieOptions {
         return {
             httpOnly: true,
-            sameSite: RequestService.queryParamToBoolean(
-                process.env.IS_PRODUCTION
-            )
-                ? "none"
-                : "strict",
-            secure: RequestService.queryParamToBoolean(
-                process.env.IS_PRODUCTION
-            ),
+            sameSite: RequestService.queryParamToBoolean(process.env.IS_PRODUCTION)
+                ? 'none'
+                : 'strict',
+            secure: RequestService.queryParamToBoolean(process.env.IS_PRODUCTION),
         };
     }
 
     public static handleShowcasing(req: Request) {
-        const requestOriginURL = new URL(
-            req.get("origin") ?? req.get("referer")
-        );
+        const requestOriginURL = new URL(req.get('origin') ?? req.get('referer'));
         const requestHost = requestOriginURL.host;
-        const requestDomain = requestHost.split(":")[0];
-        const showcaseDomain = process.env["ORIGIN_SHOWCASE_DOMAIN"];
+        const requestDomain = requestHost.split(':')[0];
+        const showcaseDomain = process.env['ORIGIN_SHOWCASE_DOMAIN'];
 
         const isShowcase = requestDomain === showcaseDomain.trim();
 
@@ -281,7 +251,7 @@ export class JWTService {
             return;
         }
 
-        const isGetMethod = req.method === "GET";
+        const isGetMethod = req.method === 'GET';
 
         if (isGetMethod === false) {
             throw new InHouseError(OperatorErrors.INVALID, 400);
@@ -293,9 +263,7 @@ export class JWTService {
             throw new InHouseError(OperatorErrors.INVALID, 400);
         }
 
-        req.cookies[process.env.COOKIE_NAME] =
-            JWTService.encodeAccessToken(adminUserName);
-        req.cookies[process.env.COOKIE_REFRESH_NAME] =
-            JWTService.encodeRefreshToken(adminUserName);
+        req.cookies[process.env.COOKIE_NAME] = JWTService.encodeAccessToken(adminUserName);
+        req.cookies[process.env.COOKIE_REFRESH_NAME] = JWTService.encodeRefreshToken(adminUserName);
     }
 }
