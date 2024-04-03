@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Operator } from 'karikarihelper';
+import { EventOrder, Operator, OperatorRole } from 'karikarihelper';
 
 // Types
 import { EventErrors } from '@models';
@@ -12,12 +12,20 @@ const router = Router();
 
 router.get('/', async (req, res) => {
     try {
-        const foundEvents = await EventService.query({
+        const operator = res.locals.operator as Operator;
+
+        let foundEvents = await EventService.query({
             id: RequestService.queryParamToString(req.query.id),
             name: RequestService.queryParamToString(req.query.name),
             date: RequestService.queryParamToDate(req.query.date),
             isOpen: RequestService.queryParamToBoolean(req.query.isOpen),
         });
+
+        if (operator.role !== OperatorRole.ADMIN) {
+            foundEvents = foundEvents.filter((event) =>
+                event.orders.filter((order) => (order as any).realm._id === operator.realm._id),
+            );
+        }
 
         res.status(200).json(ResponseService.generateSucessfulResponse(foundEvents));
     } catch (error) {

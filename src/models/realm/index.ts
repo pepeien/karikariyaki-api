@@ -28,6 +28,15 @@ const RealmSchema = new Schema({
         required: [true, RealmErrors.NAME_REQUIRED],
         validate: validateRealmName,
     },
+    users: {
+        type: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: Statics.OPERATOR_COLLECTION_NAME,
+            },
+        ],
+        default: [],
+    },
 });
 
 const RealmModel = model(Statics.REALM_COLLECTION_NAME, RealmSchema);

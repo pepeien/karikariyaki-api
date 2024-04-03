@@ -13,17 +13,21 @@ import { OperatorErrors, RealmModel } from '@models';
 
 // Services
 import { DatabaseService, StringService } from '@services';
+import { PopulateOptions } from 'mongoose';
 
 let adminRealm: Realm | null = null;
 
 export class RealmService {
-    public static visibleParameters = ['name'];
+    public static visibleParameters = ['name', 'users'];
+
+    private static _populateOptions = [
+        {
+            path: 'users',
+            select: ['displayName', 'role'],
+        },
+    ] as PopulateOptions[];
 
     public static async query(operator: Operator, values: RealmQueryableParams) {
-        if (RealmService._canPerformModifications(operator)) {
-            throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
-        }
-
         await DatabaseService.getConnection();
 
         const query = [];
@@ -40,24 +44,32 @@ export class RealmService {
             });
         }
 
-        return RealmModel.find(query.length === 0 ? null : { $and: query }).select(
-            RealmService.visibleParameters,
-        );
+        if (operator.role !== OperatorRole.ADMIN) {
+            query.push({
+                _id: operator.realm._id,
+            });
+        }
+
+        return RealmModel.find<Realm>(query.length === 0 ? null : { $and: query })
+            .select(RealmService.visibleParameters)
+            .populate(RealmService._populateOptions);
     }
 
     public static async queryId(id: string) {
         await DatabaseService.getConnection();
 
-        return RealmModel.findById(StringService.toObjectId(id)).select(
-            RealmService.visibleParameters,
-        );
+        return RealmModel.findById(StringService.toObjectId(id))
+            .select(RealmService.visibleParameters)
+            .populate(RealmService._populateOptions);
     }
 
     public static async getAdminRealm() {
         if (!adminRealm) {
             const foundRealm = await RealmModel.findOne({
                 name: Statics.REALM_ADMIN_NAME,
-            }).select(RealmService.visibleParameters);
+            })
+                .select(RealmService.visibleParameters)
+                .populate(RealmService._populateOptions);
 
             adminRealm = foundRealm.toObject<Realm>();
         }
@@ -78,7 +90,9 @@ export class RealmService {
 
         await newEntry.save();
 
-        return RealmModel.findById(newEntry._id).select(RealmService.visibleParameters);
+        return RealmModel.findById(newEntry._id)
+            .select(RealmService.visibleParameters)
+            .populate(RealmService._populateOptions);
     }
 
     public static async update(operator: Operator, id: string, values: RealmEditableParams) {
@@ -98,7 +112,9 @@ export class RealmService {
                 },
             },
             { runValidators: true },
-        ).select(RealmService.visibleParameters);
+        )
+            .select(RealmService.visibleParameters)
+            .populate(RealmService._populateOptions);
     }
 
     public static async delete(operator: Operator, id: string) {
@@ -110,7 +126,9 @@ export class RealmService {
 
         const realmObjectId = StringService.toObjectId(id);
 
-        return RealmModel.findByIdAndDelete(realmObjectId).select(RealmService.visibleParameters);
+        return RealmModel.findByIdAndDelete(realmObjectId)
+            .select(RealmService.visibleParameters)
+            .populate(RealmService._populateOptions);
     }
 
     private static _canPerformModifications(operator: Operator) {

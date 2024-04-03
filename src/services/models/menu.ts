@@ -33,10 +33,6 @@ export class MenuService {
     ] as PopulateOptions[];
 
     public static async query(operator: Operator, values: MenuQueryableParams) {
-        if (MenuService._canPerformModifications(operator)) {
-            throw new InHouseError(OperatorErrors.FORBIDDEN, 403);
-        }
-
         await DatabaseService.getConnection();
 
         const query = [];

@@ -1,25 +1,26 @@
 import { PopulateOptions } from 'mongoose';
 import {
+    Event,
     EventCreatableParams,
     EventEditableParams,
     EventQueryableParams,
     Operator,
     OperatorRole,
 } from 'karikarihelper';
+import { InHouseError } from '@types';
 
 // Models
 import { EventModel, OperatorErrors, OrderModel } from '@models';
 
 // Services
 import { DatabaseService, DateService, StringService } from '@services';
-import { InHouseError } from '@types';
 
 export class EventService {
     public static visibleParameters = ['name', 'date', 'orders', 'isOpen'];
 
     private static _populateOptions = {
         path: 'orders',
-        select: ['status', 'client'],
+        select: ['status', 'client', 'items', 'createdAt', 'updatedAt'],
         populate: [
             {
                 path: 'operator',
@@ -31,7 +32,11 @@ export class EventService {
             },
             {
                 path: 'items',
-                select: 'name',
+                select: ['product', 'modifications'],
+                populate: {
+                    path: 'product',
+                    select: 'name',
+                },
             },
         ],
     } as PopulateOptions;
@@ -68,12 +73,12 @@ export class EventService {
         }
 
         if (populate) {
-            return EventModel.find(query.length === 0 ? null : { $and: query })
+            return EventModel.find<Event>(query.length === 0 ? null : { $and: query })
                 .select(EventService.visibleParameters)
                 .populate(EventService._populateOptions);
         }
 
-        return EventModel.find(query.length === 0 ? null : { $and: query }).select(
+        return EventModel.find<Event>(query.length === 0 ? null : { $and: query }).select(
             EventService.visibleParameters,
         );
     }

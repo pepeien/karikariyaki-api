@@ -16,7 +16,7 @@ import { EventModel, OperatorErrors, OrderErrors, OrderModel } from '@models';
 import { DatabaseService, OperatorService, ProductService, StringService } from '@services';
 
 export class OrderService {
-    public static visibleParameters = ['realm', 'status', 'client'];
+    public static visibleParameters = ['realm', 'status', 'client', 'createdAt', 'updatedAt'];
 
     private static _populateOptions = [
         {
