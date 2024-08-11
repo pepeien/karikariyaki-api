@@ -8,7 +8,7 @@
         "start": "node --loader ts-node/esm src/index.ts",
         "dev": "ts-node-dev --no-notify src/index.ts"
     },
-    "author": "Ericodesu",
+    "author": "Pepeien",
     "license": "MIT",
     "_moduleAliases": {
         "@enums": "src/enums/index.ts",
