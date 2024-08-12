@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { Operator, OperatorRole, OrderStatus, Telemetry } from 'karikarihelper';
 
 // Services
-import { EventService, RealmService, ResponseService } from '@services';
+import { EventService, OrderService, RealmService, ResponseService } from '@services';
 
 const router = Router();
 
@@ -125,22 +125,14 @@ router.get('/faster-stand', async (req, res) => {
 
 router.get('/order-queue', async (req, res) => {
     try {
-        const events = (await EventService.query({})).filter(
-            (event) => new Date(event.date).getTime() < Date.now(),
+        const operator = res.locals.operator as Operator;
+        const latestEventOrders = (await OrderService.query(operator, {})).filter(
+            (order) => order.status !== OrderStatus.PICKED_UP,
         );
-        const latestEvent = events[events.length - 1];
-
-        let pendingOrdersCount = 0;
-
-        latestEvent.orders.forEach((order) => {
-            if (order.status !== OrderStatus.PICKED_UP) {
-                pendingOrdersCount++;
-            }
-        });
 
         const telemetry = {
             title: '',
-            data: pendingOrdersCount,
+            data: latestEventOrders.length,
         } as Telemetry<number>;
 
         res.status(200).json(ResponseService.generateSucessfulResponse(telemetry));
