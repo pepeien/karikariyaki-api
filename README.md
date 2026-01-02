@@ -67,4 +67,4 @@ npm install && npm start
 
 ## Documentation
 
-You can reach to the [Developer Portal](https://api.erickfrederick.com/#/service/karikariyaki) to a more hands-on driven information.
+You can reach to the [Developer Portal]() to a more hands-on driven information.
